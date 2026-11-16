@@ -187,21 +187,81 @@ ex_meta = af[(af.seg_id == EX_SEG) & (af.condition == "b")].context.iloc[0]
 ax_examples = ax[ax.seg_id.isin(noise_ids)].description.drop_duplicates().head(40)
 ax_pick = [d for d in ax_examples if re.search(r"spray|cigarette|gravel|Thank you|frying|whip", d)][:5]
 
-# ───────────────────────── 窗長（選用：ws 寫 manifest_site.json 後填入）
-win = []
+# ───────────────────────── 窗長：三份 manifest_site.json（ws 經 Exchange 傳來）＋ data/manifest.json 的交集
+MANI = Path.home() / "Exchange/files/prewar_stem_manifests"
+WS = (4, 8, 10)
+win = {}
 for w, pat in ((4, "full_nv_w4_*"), (8, "full_nv_2*"), (10, "full_nv_w10_*")):
-    hits = sorted((RUNS / "full").glob(pat))
-    m = next((json.loads((h / "manifest_site.json").read_text()) for h in reversed(hits)
-              if (h / "manifest_site.json").exists()), None)
-    win.append((w, m))
-if all(m for _, m in win):
-    win_html = ("<div class=tablewrap><table><thead><tr><th>窗長</th><th class=num>窗數</th><th class=num>純樂器時數</th>"
-                "<th class=num>純雜音時數</th></tr></thead><tbody>" + "".join(
-                    f"<tr><td>{w} 秒</td><td class=num>{m['n_windows']:,}</td><td class=num>{m['hours']['pure_instrument']:.1f}</td>"
-                    f"<td class=num>{m['hours']['pure_noise']:.1f}</td></tr>" for w, m in win) + "</tbody></table></div>")
-else:
-    win_html = ('<div class="card">4 秒窗（步距 2 秒）與 10 秒窗（步距 5 秒）的全量正在實驗室工作站執行，'
-                "完成後本節會補上三種窗長的時數與類別比較。下載清單目前是 8 秒版。</div>")
+    hits = sorted(MANI.glob(f"{pat}.manifest_site.json"))
+    win[w] = json.loads(hits[-1].read_text()) if hits else None
+multi = json.loads((SITE / "data/manifest.json").read_text()).get("multiwindow")
+if not (all(win.values()) and multi):
+    raise SystemExit(f"缺窗長 manifest（{MANI}）或 data/manifest.json 的 multiwindow 區塊")
+
+
+def agree(a, b):
+    return win[a]["label_agreement"][f"vs_w{b}"]
+
+
+win_svg = stacked([(f"{w} 秒窗", f"步距 {win[w]['hop_s']:g} 秒", win[w]["class_share"], win[w]["n_windows"]) for w in WS],
+                  "三種窗長全量的類別比例（伴奏軌）")
+win_table = ("<div class=tablewrap><table><thead><tr><th>窗長</th><th class=num>窗數</th><th class=num>純樂器</th>"
+             "<th class=num>純雜音</th><th class=num>混合比例</th></tr></thead><tbody>" + "".join(
+                 f"<tr><td>{w} 秒</td><td class=num>{win[w]['n_windows']:,}</td>"
+                 f"<td class=num>{win[w]['hours']['pure_instrument']:.1f} h（{win[w]['n_intervals']['pure_instrument']:,} 段）</td>"
+                 f"<td class=num>{win[w]['hours']['pure_noise']:.1f} h（{win[w]['n_intervals']['pure_noise']:,} 段）</td>"
+                 f"<td class=num>{pct(win[w]['class_share']['mixed'])}</td></tr>" for w in WS) + "</tbody></table></div>")
+
+# 逐秒一致率矩陣（對稱，取 overall）
+mat_rows = []
+for a in WS:
+    cells = "".join("<td class=num>—</td>" if a == b else f"<td class=num>{pct(agree(a, b)['overall'])}</td>" for b in WS)
+    mat_rows.append(f"<tr><th>{a} 秒</th>{cells}</tr>")
+win_matrix = ("<div class=tablewrap><table><thead><tr><th>逐秒一致率</th>" + "".join(f"<th class=num>{b} 秒</th>" for b in WS)
+              + "</tr></thead><tbody>" + "".join(mat_rows) + "</tbody></table></div>")
+
+# 有方向的條件一致率：A 判為該類的點，在 B 仍判同類
+PAIRS = [(4, 8), (8, 4), (8, 10), (10, 8), (4, 10), (10, 4)]
+cond_rows = "".join(
+    f"<tr><td>{a} 秒 → {b} 秒</td>" + "".join(f"<td class=num>{pct(agree(a, b)['same_given_this'][c])}</td>"
+                                              for c in ("pure_instrument", "pure_noise", "mixed")) + "</tr>"
+    for a, b in PAIRS)
+win_cond = ("<div class=tablewrap><table><thead><tr><th>A 判為該類 → B 仍判同類</th><th class=num>純樂器</th>"
+            "<th class=num>純雜音</th><th class=num>混合</th></tr></thead><tbody>" + cond_rows + "</tbody></table></div>")
+
+si = multi["strict_all_three_hours"]
+h8 = win[8]["hours"]
+win_inter = ("<div class=tablewrap><table><thead><tr><th>取法</th><th class=num>純樂器</th><th class=num>純雜音</th></tr></thead><tbody>"
+             f"<tr><td>只用 8 秒窗（目前的 segments_pure）</td><td class=num>{h8['pure_instrument']:.2f} h</td><td class=num>{h8['pure_noise']:.2f} h</td></tr>"
+             f"<tr><td>三種窗長交集（嚴格）</td><td class=num>{si['pure_instrument']:.2f} h（{pct(si['pure_instrument'] / h8['pure_instrument'])}）</td>"
+             f"<td class=num>{si['pure_noise']:.2f} h（{pct(si['pure_noise'] / h8['pure_noise'])}）</td></tr>"
+             + (f"<tr><td>三種窗長交集（各取中心最近的窗；下載頁範例程式的算法）</td>"
+                f"<td class=num>{sn['pure_instrument']:.2f} h（{pct(sn['pure_instrument'] / h8['pure_instrument'])}）</td>"
+                f"<td class=num>{sn['pure_noise']:.2f} h（{pct(sn['pure_noise'] / h8['pure_noise'])}）</td></tr>"
+                if (sn := multi.get("nearest_all_three_hours")) else "")
+             + "</tbody></table></div>")
+
+c48, c84 = agree(4, 8)["same_given_this"], agree(8, 4)["same_given_this"]
+win_html = f"""{legend}
+{win_svg}
+{win_table}
+<p>三種窗長都跑完全量（1,801 首），規則與模型完全相同，只換窗長與步距（步距皆為窗長的一半）。類別比例很接近；窗越短，判為混合的比例越高。</p>
+<h3>逐秒比較</h3>
+<p>每首每 1 秒取一點（t＝0.5、1.5…），各窗長取中心最近的窗之類別，只比三種窗長都涵蓋的點（{agree(4, 8)['n_points']:,} 點）。</p>
+{win_matrix}
+<p>一致率只說明彼此接近，<b>不說明哪個對</b>；哪個窗長精確率最高，要等黃金標準。下表是有方向的比較：A 判為某類的點，在 B 仍判同類的比例。</p>
+{win_cond}
+<ul>
+<li><b>短窗的純樂器比較嚴格</b>：4 秒判純樂器的點，8 秒仍判純樂器的有 {pct(c48['pure_instrument'])}；反過來只有 {pct(c84['pure_instrument'])}。
+4 秒的純樂器大致落在 8 秒純樂器的範圍內，多出來的部分在 4 秒被判為混合；推測是短暫的人聲殘留在長窗裡被平均掉，尚未抽聽確認。</li>
+<li><b>純雜音最不穩定</b>：各方向只有 {pct(min(agree(a, b)['same_given_this']['pure_noise'] for a, b in PAIRS))} 到 {pct(max(agree(a, b)['same_given_this']['pure_noise'] for a, b in PAIRS))}。
+純雜音的條件是三種分數都要很低，窗長一變，窗內只要混進一點音樂就不成立。</li>
+<li><b>8 與 10 秒最接近</b>（{pct(agree(8, 10)['overall'])}），4 秒與兩者差得較多。</li>
+</ul>
+<h3>三種窗長的交集</h3>
+<p>{esc(multi['strict_rule'])}</p>
+{win_inter}
+<p>嚴格交集讓純樂器少了約四成、純雜音少了約六成。交集是否真的比較準，同樣要等黃金標準；在那之前，三種窗長的逐窗類別都公開在下載區（<code>windows_class_w4／w8／w10.parquet</code>），使用者可以自行決定取 8 秒版或取交集。</p>"""
 
 # ───────────────────────── 流程圖（SVG）
 
@@ -448,13 +508,14 @@ body = f"""
 </ul>
 
 <h2 id="window">8. 實驗三：窗長 4、8、10 秒</h2>
-<p>窗太短，模型資訊不足、分數不穩；窗太長，短暫的人聲殘留會被平均掉，或把靜音和音樂混在一起。目前只用 8 秒窗做下載清單。</p>
+<p>窗太短，模型資訊不足、分數不穩；窗太長，短暫的人聲殘留會被平均掉，或把靜音和音樂混在一起。下載清單的主版本（<code>segments_pure</code>、<code>windows_top10</code>）是 8 秒窗。</p>
 {win_html}
 
 <h2 id="use">9. 使用下載清單的建議</h2>
 <ul>
 <li><b>先抽聽</b>：類別未經人工驗證。建議先從每個載體各抽 20 到 30 段聽過，再決定要不要整批使用。</li>
 <li><b>想更保守就收緊門檻</b>：<code>segments_pure</code> 帶有區段內最差的分數，例如只取 <code>ast_voice_max &lt; 0.02</code> 的純樂器段，可以進一步降低人聲殘留的風險；<code>windows_top10</code> 可以完全自訂規則。</li>
+<li><b>要更保守可取窗長交集</b>：<code>windows_class_w4／w8／w10.parquet</code> 是三種窗長的逐窗類別（欄位 stem_path、start、end、class、residue）。只取三者都判同一純類別的秒數，時數會減少，但較不受窗長影響。</li>
 <li><b>依曲目分組切分</b>：同一首（同一個 <code>stem_path</code>）的區段不要同時出現在訓練與測試集。</li>
 <li><b>純雜音的來源偏向曲前曲後</b>：空轉段的雜音和曲中音樂底下的雜音特性可能不同，需要時可依 <code>start</code> 與曲長區分。</li>
 <li><b>分離殘留</b>：伴奏軌的錯誤主要是人聲殘留；demucs 對某些樂器（例如洞簫）會誤放進人聲軌，所以伴奏軌的純樂器段可能缺了這類樂器。</li>

@@ -21,8 +21,47 @@
   },
   "n_windows": 110329,
   "bytes": {
-    "windows_top10.parquet": 15453138,
     "segments_pure.csv": 1199240,
-    "segments_pure.parquet": 147978
+    "segments_pure.parquet": 147978,
+    "windows_class_w10.parquet": 81761,
+    "windows_class_w4.parquet": 154331,
+    "windows_class_w8.parquet": 90678,
+    "windows_top10.parquet": 15453138
+  },
+  "multiwindow": {
+    "w8": {
+      "file": "windows_class_w8.parquet",
+      "source_run": "full_nv_20261116_1303",
+      "window_s": 8.0,
+      "hop_s": 4.0,
+      "n_windows": 110329,
+      "bytes": 90678
+    },
+    "w4": {
+      "file": "windows_class_w4.parquet",
+      "source_run": "full_nv_w4_20261116_1414",
+      "window_s": 4.0,
+      "hop_s": 2.0,
+      "n_windows": 223276,
+      "bytes": 154331
+    },
+    "w10": {
+      "file": "windows_class_w10.parquet",
+      "source_run": "full_nv_w10_20261116_1601",
+      "window_s": 10.0,
+      "hop_s": 5.0,
+      "n_windows": 87710,
+      "bytes": 81761
+    },
+    "strict_all_three_hours": {
+      "pure_instrument": 44.82,
+      "pure_noise": 5.33
+    },
+    "nearest_all_three_hours": {
+      "pure_instrument": 54.03,
+      "pure_noise": 7.28
+    },
+    "nearest_rule": "每首每 1 秒取一點；各窗長取中心最近的窗，三者同為純類別才算該類（網頁讀取範例的算法）。",
+    "strict_rule": "每首每 1 秒取一點（t＝0.5、1.5…）；三種窗長下，涵蓋該點的每個窗都判為同一純類別，才算該類。時數為符合的點數 ÷ 3600。"
   }
 }

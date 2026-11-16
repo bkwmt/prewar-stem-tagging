@@ -452,9 +452,31 @@ details.tbl summary{cursor:pointer;color:var(--line)}
 <tr><td><a href="data/windows_top10.parquet">windows_top10.parquet</a></td>
 <td>伴奏軌每個 8 秒窗一列（110,329 列），含規則類別、殘留旗標、伴奏軌與人聲軌音量（dB），以及 AST 前 10 名（標籤＋sigmoid）與 CLAP 前 10 名（提示詞＋softmax）。適合自訂門檻。</td>
 <td class="num">14.7 MB</td></tr>
+<tr><td><a href="data/windows_class_w4.parquet">windows_class_w4.parquet</a></td><td>伴奏軌每個 4 秒窗一列（步距 2 秒，223,276 列），只含規則類別。欄位：<code>stem_path, start, end, class, residue</code>。</td><td class="num">0.1 MB</td></tr>
+<tr><td><a href="data/windows_class_w8.parquet">windows_class_w8.parquet</a></td><td>伴奏軌每個 8 秒窗一列（步距 4 秒，110,329 列），只含規則類別。欄位：<code>stem_path, start, end, class, residue</code>。</td><td class="num">0.1 MB</td></tr>
+<tr><td><a href="data/windows_class_w10.parquet">windows_class_w10.parquet</a></td><td>伴奏軌每個 10 秒窗一列（步距 5 秒，87,710 列），只含規則類別。欄位：<code>stem_path, start, end, class, residue</code>。</td><td class="num">0.1 MB</td></tr>
 <tr><td><a href="data/manifest.json">manifest.json</a></td><td>來源執行、規則門檻、各檔段數與大小。</td><td class="num">—</td></tr>
 </tbody></table></div>
 <p>讀取範例（Python）：<code>pd.read_parquet("segments_pure.parquet").query("class == 'pure_noise'")</code></p>
+<h3>三種窗長取交集</h3>
+<p>同一段落在 4、8、10 秒窗下可能得到不同類別。要較嚴格的素材，可只取三種窗長都判為同一純類別的時段。每首每 1 秒取一點（t＝0.5、1.5…）：</p>
+<ul>
+<li>嚴格：涵蓋該點的每個窗，在三種窗長下都判同一純類別。純樂器 44.82 小時、純雜音 5.33 小時。</li>
+<li>寬鬆（下方範例的算法）：各窗長只取中心最近的窗，三者同類。純樂器 54.03 小時、純雜音 7.28 小時。</li>
+</ul>
+<p>對照：只用 8 秒窗是純樂器 76.25 小時、純雜音 13.25 小時。純雜音縮減最多，表示許多純雜音時段至少在一種窗長下被判為混合。</p>
+<pre><code>import numpy as np, pandas as pd
+W = {w: pd.read_parquet(f&quot;windows_class_w{w}.parquet&quot;) for w in (4, 8, 10)}
+def per_second(d):
+    d = d.assign(c=(d.start + d.end) / 2)
+    out = []
+    for k, g in d.groupby(&quot;stem_path&quot;, observed=True):
+        t = np.arange(0.5, g.end.max(), 1.0)
+        i = np.abs(t[:, None] - g.c.to_numpy()).argmin(1)
+        out.append(pd.DataFrame({&quot;stem_path&quot;: k, &quot;t&quot;: t, &quot;cls&quot;: g[&quot;class&quot;].astype(str).to_numpy()[i]}))
+    return pd.concat(out).set_index([&quot;stem_path&quot;, &quot;t&quot;]).cls
+L = pd.concat({w: per_second(d) for w, d in W.items()}, axis=1, join=&quot;inner&quot;)
+strict = L[(L[4] == L[8]) &amp; (L[8] == L[10]) &amp; L[8].isin([&quot;pure_instrument&quot;, &quot;pure_noise&quot;])]</code></pre>
 
 <h2>方法</h2>
 <ul>

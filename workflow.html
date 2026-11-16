@@ -334,13 +334,60 @@ pre{white-space:pre-wrap;word-break:break-word;background:var(--card);border:1px
 </ul>
 
 <h2 id="window">8. 實驗三：窗長 4、8、10 秒</h2>
-<p>窗太短，模型資訊不足、分數不穩；窗太長，短暫的人聲殘留會被平均掉，或把靜音和音樂混在一起。目前只用 8 秒窗做下載清單。</p>
-<div class="card">4 秒窗（步距 2 秒）與 10 秒窗（步距 5 秒）的全量正在實驗室工作站執行，完成後本節會補上三種窗長的時數與類別比較。下載清單目前是 8 秒版。</div>
+<p>窗太短，模型資訊不足、分數不穩；窗太長，短暫的人聲殘留會被平均掉，或把靜音和音樂混在一起。下載清單的主版本（<code>segments_pure</code>、<code>windows_top10</code>）是 8 秒窗。</p>
+<p class="legend"><span class="key"><i class="" style="background:var(--c-inst)"></i>純樂器</span><span class="key"><i class="" style="background:var(--c-vocal)"></i>純人聲</span><span class="key"><i class="" style="background:var(--c-noise)"></i>純雜音</span><span class="key"><i class="sil" style="background:var(--c-sil)"></i>靜音</span><span class="key"><i class="" style="background:var(--c-mixed)"></i>混合</span></p>
+<svg class="viz" viewBox="0 0 734 114" role="img" aria-label="三種窗長全量的類別比例（伴奏軌）">
+<line class="grid" x1="230.0" x2="230.0" y1="0" y2="96"/><text class="tick" x="230.0" y="110" text-anchor="middle">0%</text>
+<line class="grid" x1="350.0" x2="350.0" y1="0" y2="96"/><text class="tick" x="350.0" y="110" text-anchor="middle">25%</text>
+<line class="grid" x1="470.0" x2="470.0" y1="0" y2="96"/><text class="tick" x="470.0" y="110" text-anchor="middle">50%</text>
+<line class="grid" x1="590.0" x2="590.0" y1="0" y2="96"/><text class="tick" x="590.0" y="110" text-anchor="middle">75%</text>
+<line class="grid" x1="710.0" x2="710.0" y1="0" y2="96"/><text class="tick" x="710.0" y="110" text-anchor="middle">100%</text>
+<text class="lab" x="222" y="15.4" text-anchor="end">4 秒窗<tspan class="sub"> 步距 2 秒</tspan></text>
+<rect class="seg" x="230.0" y="0" width="239.2" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="4 秒窗｜步距 2 秒｜純樂器：50.3%（112219 / 223276 段）"/>
+<text class="inlab" x="236.0" y="15.4">50%</text>
+<rect class="seg" x="471.2" y="0" width="38.2" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="4 秒窗｜步距 2 秒｜純雜音：8.4%（18711 / 223276 段）"/>
+<text class="inlab" x="477.2" y="15.4">8%</text>
+<rect class="seg sil" x="511.5" y="0" width="46.5" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="4 秒窗｜步距 2 秒｜靜音：10.1%（22573 / 223276 段）"/>
+<rect class="seg" x="560.0" y="0" width="148.0" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="4 秒窗｜步距 2 秒｜混合：31.2%（69774 / 223276 段）"/>
+<text class="lab" x="222" y="47.4" text-anchor="end">8 秒窗<tspan class="sub"> 步距 4 秒</tspan></text>
+<rect class="seg" x="230.0" y="32" width="259.9" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="8 秒窗｜步距 4 秒｜純樂器：54.6%（60207 / 110329 段）"/>
+<text class="inlab" x="236.0" y="47.4">55%</text>
+<rect class="seg" x="491.9" y="32" width="39.2" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="8 秒窗｜步距 4 秒｜純雜音：8.6%（9477 / 110329 段）"/>
+<text class="inlab" x="497.9" y="47.4">9%</text>
+<rect class="seg sil" x="533.2" y="32" width="41.4" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="8 秒窗｜步距 4 秒｜靜音：9.0%（9985 / 110329 段）"/>
+<rect class="seg" x="576.6" y="32" width="131.4" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="8 秒窗｜步距 4 秒｜混合：27.8%（30660 / 110329 段）"/>
+<text class="lab" x="222" y="79.4" text-anchor="end">10 秒窗<tspan class="sub"> 步距 5 秒</tspan></text>
+<rect class="seg" x="230.0" y="64" width="266.7" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="10 秒窗｜步距 5 秒｜純樂器：56.0%（49100 / 87710 段）"/>
+<text class="inlab" x="236.0" y="79.4">56%</text>
+<rect class="seg" x="498.7" y="64" width="38.5" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="10 秒窗｜步距 5 秒｜純雜音：8.4%（7403 / 87710 段）"/>
+<text class="inlab" x="504.7" y="79.4">8%</text>
+<rect class="seg sil" x="539.2" y="64" width="40.0" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="10 秒窗｜步距 5 秒｜靜音：8.8%（7675 / 87710 段）"/>
+<rect class="seg" x="581.2" y="64" width="126.8" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="10 秒窗｜步距 5 秒｜混合：26.8%（23541 / 87710 段）"/>
+</svg>
+<div class=tablewrap><table><thead><tr><th>窗長</th><th class=num>窗數</th><th class=num>純樂器</th><th class=num>純雜音</th><th class=num>混合比例</th></tr></thead><tbody><tr><td>4 秒</td><td class=num>223,276</td><td class=num>71.7 h（10,813 段）</td><td class=num>13.3 h（4,257 段）</td><td class=num>31.2%</td></tr><tr><td>8 秒</td><td class=num>110,329</td><td class=num>76.2 h（5,716 段）</td><td class=num>13.2 h（2,140 段）</td><td class=num>27.8%</td></tr><tr><td>10 秒</td><td class=num>87,710</td><td class=num>77.6 h（4,775 段）</td><td class=num>12.8 h（1,655 段）</td><td class=num>26.8%</td></tr></tbody></table></div>
+<p>三種窗長都跑完全量（1,801 首），規則與模型完全相同，只換窗長與步距（步距皆為窗長的一半）。類別比例很接近；窗越短，判為混合的比例越高。</p>
+<h3>逐秒比較</h3>
+<p>每首每 1 秒取一點（t＝0.5、1.5…），各窗長取中心最近的窗之類別，只比三種窗長都涵蓋的點（446,758 點）。</p>
+<div class=tablewrap><table><thead><tr><th>逐秒一致率</th><th class=num>4 秒</th><th class=num>8 秒</th><th class=num>10 秒</th></tr></thead><tbody><tr><th>4 秒</th><td class=num>—</td><td class=num>83.0%</td><td class=num>79.8%</td></tr><tr><th>8 秒</th><td class=num>83.0%</td><td class=num>—</td><td class=num>87.9%</td></tr><tr><th>10 秒</th><td class=num>79.8%</td><td class=num>87.9%</td><td class=num>—</td></tr></tbody></table></div>
+<p>一致率只說明彼此接近，<b>不說明哪個對</b>；哪個窗長精確率最高，要等黃金標準。下表是有方向的比較：A 判為某類的點，在 B 仍判同類的比例。</p>
+<div class=tablewrap><table><thead><tr><th>A 判為該類 → B 仍判同類</th><th class=num>純樂器</th><th class=num>純雜音</th><th class=num>混合</th></tr></thead><tbody><tr><td>4 秒 → 8 秒</td><td class=num>91.6%</td><td class=num>78.6%</td><td class=num>68.8%</td></tr><tr><td>8 秒 → 4 秒</td><td class=num>84.7%</td><td class=num>75.4%</td><td class=num>77.2%</td></tr><tr><td>8 秒 → 10 秒</td><td class=num>92.5%</td><td class=num>85.8%</td><td class=num>77.4%</td></tr><tr><td>10 秒 → 8 秒</td><td class=num>90.3%</td><td class=num>86.9%</td><td class=num>80.0%</td></tr><tr><td>4 秒 → 10 秒</td><td class=num>90.5%</td><td class=num>74.0%</td><td class=num>62.6%</td></tr><tr><td>10 秒 → 4 秒</td><td class=num>81.6%</td><td class=num>71.9%</td><td class=num>72.6%</td></tr></tbody></table></div>
+<ul>
+<li><b>短窗的純樂器比較嚴格</b>：4 秒判純樂器的點，8 秒仍判純樂器的有 91.6%；反過來只有 84.7%。
+4 秒的純樂器大致落在 8 秒純樂器的範圍內，多出來的部分在 4 秒被判為混合；推測是短暫的人聲殘留在長窗裡被平均掉，尚未抽聽確認。</li>
+<li><b>純雜音最不穩定</b>：各方向只有 71.9% 到 86.9%。
+純雜音的條件是三種分數都要很低，窗長一變，窗內只要混進一點音樂就不成立。</li>
+<li><b>8 與 10 秒最接近</b>（87.9%），4 秒與兩者差得較多。</li>
+</ul>
+<h3>三種窗長的交集</h3>
+<p>每首每 1 秒取一點（t＝0.5、1.5…）；三種窗長下，涵蓋該點的每個窗都判為同一純類別，才算該類。時數為符合的點數 ÷ 3600。</p>
+<div class=tablewrap><table><thead><tr><th>取法</th><th class=num>純樂器</th><th class=num>純雜音</th></tr></thead><tbody><tr><td>只用 8 秒窗（目前的 segments_pure）</td><td class=num>76.25 h</td><td class=num>13.25 h</td></tr><tr><td>三種窗長交集（嚴格）</td><td class=num>44.82 h（58.8%）</td><td class=num>5.33 h（40.2%）</td></tr><tr><td>三種窗長交集（各取中心最近的窗；下載頁範例程式的算法）</td><td class=num>54.03 h（70.9%）</td><td class=num>7.28 h（54.9%）</td></tr></tbody></table></div>
+<p>嚴格交集讓純樂器少了約四成、純雜音少了約六成。交集是否真的比較準，同樣要等黃金標準；在那之前，三種窗長的逐窗類別都公開在下載區（<code>windows_class_w4／w8／w10.parquet</code>），使用者可以自行決定取 8 秒版或取交集。</p>
 
 <h2 id="use">9. 使用下載清單的建議</h2>
 <ul>
 <li><b>先抽聽</b>：類別未經人工驗證。建議先從每個載體各抽 20 到 30 段聽過，再決定要不要整批使用。</li>
 <li><b>想更保守就收緊門檻</b>：<code>segments_pure</code> 帶有區段內最差的分數，例如只取 <code>ast_voice_max &lt; 0.02</code> 的純樂器段，可以進一步降低人聲殘留的風險；<code>windows_top10</code> 可以完全自訂規則。</li>
+<li><b>要更保守可取窗長交集</b>：<code>windows_class_w4／w8／w10.parquet</code> 是三種窗長的逐窗類別（欄位 stem_path、start、end、class、residue）。只取三者都判同一純類別的秒數，時數會減少，但較不受窗長影響。</li>
 <li><b>依曲目分組切分</b>：同一首（同一個 <code>stem_path</code>）的區段不要同時出現在訓練與測試集。</li>
 <li><b>純雜音的來源偏向曲前曲後</b>：空轉段的雜音和曲中音樂底下的雜音特性可能不同，需要時可依 <code>start</code> 與曲長區分。</li>
 <li><b>分離殘留</b>：伴奏軌的錯誤主要是人聲殘留；demucs 對某些樂器（例如洞簫）會誤放進人聲軌，所以伴奏軌的純樂器段可能缺了這類樂器。</li>
