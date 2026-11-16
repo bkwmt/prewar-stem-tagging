@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>工作流程與實驗</title>
+<meta name="description" content="戰前 78 轉分軌標註的目的、流程、決策理由，以及音訊語言模型、抽取模型與窗長的實驗紀錄。">
+<style>:root{--ink:#24344C;--line:#3E5A7D;--accent:#9B2744;--paper:#F1F4F8;--grey:#849BB7;--pink:#D4A7B2;--bg:#FFFFFF;--card:#F7F9FC;--rule:#D6DEE8}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#E6ECF4;--line:#9DB4D1;--accent:#E07A95;--paper:#1B2433;--grey:#8DA2BD;--bg:#111822;--card:#18212E;--rule:#2A3747}}
+:root[data-theme="dark"]{--ink:#E6ECF4;--line:#9DB4D1;--accent:#E07A95;--paper:#1B2433;--grey:#8DA2BD;--bg:#111822;--card:#18212E;--rule:#2A3747}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"PingFang TC","Noto Sans TC","Heiti TC","Microsoft JhengHei",system-ui,sans-serif;font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased}
+.wrap{max-width:900px;margin:0 auto;padding:28px 16px 72px}
+header.hero{background:var(--paper);border-bottom:1px solid var(--rule)}
+header.hero .wrap{padding-top:28px;padding-bottom:22px}
+.crumb{font-size:.88rem;color:var(--grey);margin:0 0 .8em}
+.crumb a{color:var(--grey)}
+h1{font-size:1.7rem;line-height:1.3;margin:0 0 .4em;letter-spacing:.01em}
+.sub{color:var(--line);font-size:1.02rem;margin:0 0 .6em}
+.meta{font-size:.88rem;color:var(--grey);margin:0}
+h2{font-size:1.32rem;margin:2.2em 0 .6em;padding-bottom:.25em;border-bottom:2px solid var(--line);scroll-margin-top:16px}
+h3{font-size:1.1rem;margin:1.7em 0 .5em;color:var(--line)}
+h4{font-size:1rem;margin:1.3em 0 .3em}
+p{margin:.6em 0}
+a{color:var(--line);text-decoration:underline;text-decoration-color:var(--grey);text-underline-offset:3px}
+a:hover{color:var(--accent);text-decoration-color:var(--accent)}
+hr{border:0;border-top:1px solid var(--rule);margin:2em 0}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.92rem}
+th,td{border:1px solid var(--rule);padding:7px 10px;vertical-align:top;text-align:left}
+th{background:var(--paper);font-weight:600}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+blockquote{margin:1em 0;padding:.6em 1.1em;border-left:4px solid var(--pink);background:var(--card)}
+code{font-family:ui-monospace,Menlo,monospace;font-size:.9em;background:var(--paper);padding:1px 5px;border-radius:4px;word-break:break-all}
+pre{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:12px 14px;overflow-x:auto;font-size:.88rem;line-height:1.5}
+pre code{background:none;padding:0;word-break:normal}
+ul,ol{padding-left:1.5em}
+li{margin:.25em 0}
+.card{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--line);border-radius:8px;padding:12px 16px;margin:1em 0}
+.card.warn{border-left-color:var(--accent)}
+.notebox{font-size:.9rem;color:var(--grey);background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:10px 14px;margin:1.2em 0}
+.notebox b{color:var(--ink)}
+.list{list-style:none;padding:0;margin:.6em 0}
+.list li{padding:.55em 0;border-bottom:1px solid var(--rule)}
+.list li:last-child{border-bottom:0}
+.list .t{font-weight:600}
+.list .d{color:var(--grey);font-size:.86rem;margin-left:.6em;white-space:nowrap}
+.list .b{display:block;color:var(--line);font-size:.92rem;margin-top:.15em}
+.tag{display:inline-block;font-size:.74rem;padding:1px 8px;border-radius:999px;background:var(--paper);color:var(--line);border:1px solid var(--rule);margin-right:4px;vertical-align:middle}
+footer{margin-top:3.5em;padding-top:1em;border-top:1px solid var(--rule);font-size:.85rem;color:var(--grey)}
+img{max-width:100%;height:auto}
+.toc{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:12px 18px;margin:18px 0 8px;font-size:.92rem}
+.toc ul{margin:.3em 0 0;padding-left:1.3em;columns:2;column-gap:28px}
+.toc li{break-inside:avoid;margin:.15em 0}
+@media (max-width:640px){.toc ul{columns:1}}
+/* ---- 分類與文獻庫（2026-10-06） ---- */
+h2.line{border-bottom-width:3px;margin-top:2.6em}
+.line-blurb{color:var(--grey);font-size:.95rem;margin:-.2em 0 1em}
+h3.group{font-size:1.08rem;color:var(--ink);margin:1.8em 0 .4em;padding-left:.6em;border-left:4px solid var(--line)}
+.qtag{display:inline-block;font-size:.8rem;line-height:1;padding:3px 6px 2px;border-radius:999px;background:var(--paper);color:var(--line);border:1px solid var(--rule);margin-left:.35em;vertical-align:middle;text-decoration:none}
+.qtag.main{background:var(--line);color:var(--bg);border-color:var(--line)}
+.pdfbtn{display:inline-block;font-size:.82rem;line-height:1.1;padding:4px 10px;border-radius:6px;border:1px solid var(--line);color:var(--line);text-decoration:none;margin-left:.5em;white-space:nowrap;vertical-align:middle}
+.pdfbtn:hover{background:var(--line);color:var(--bg)}
+.pdfbtn.ext{border-style:dashed;color:var(--grey);border-color:var(--grey)}
+.pdfbtn.ext:hover{background:var(--card);color:var(--ink)}
+a.doc{text-decoration-style:dotted}
+.toc .line-title{font-weight:600;color:var(--ink);list-style:none;margin-left:-1.3em;margin-top:.5em}
+.toc ul.sub{columns:1;padding-left:1.3em;margin-top:0}
+table.docs{font-size:.88rem}
+table.docs td:nth-child(1){min-width:16em}
+table.docs .lic{color:var(--grey);font-size:.84rem}
+.stat{display:inline-block;background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:6px 12px;margin:.3em .5em .3em 0;font-size:.9rem}
+.stat b{color:var(--accent);font-size:1.1rem;margin-right:.2em}
+/* ---- 首頁改版（2026-10-13）：三個入口、系列封面卡、清單預設收合、筆記頁 hero 瘦身 ---- */
+.intro{font-size:1rem;color:var(--line);margin:1em 0 .3em}
+details.about{font-size:.9rem;color:var(--grey);margin:0 0 1.6em}
+details.about summary{cursor:pointer;color:var(--line)}
+details.about p{margin:.5em 0 0}
+h2.entry{margin-top:1.8em}
+.scard{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--accent);border-radius:10px;padding:16px 20px;margin:.8em 0}
+.scard h3{margin:0 0 .25em;font-size:1.2rem;color:var(--ink)}
+.scard .b{color:var(--line);margin:.2em 0 .6em;font-size:.95rem}
+.scard ol.ch{margin:.3em 0 .5em;padding-left:1.5em;columns:2;column-gap:28px;font-size:.95rem}
+.scard ol.ch li{break-inside:avoid;margin:.12em 0}
+.scard .logs{font-size:.88rem;color:var(--grey);margin:.4em 0 0}
+.scard .logs a{margin-right:.4em}
+@media (max-width:640px){.scard ol.ch{columns:1}}
+h3.rline{font-size:1.12rem;color:var(--ink);margin:1.4em 0 .1em}
+.rline-blurb{color:var(--grey);font-size:.92rem;margin:0 0 .6em}
+details.group{border-bottom:1px solid var(--rule);padding:.45em 0}
+details.group summary{cursor:pointer;font-weight:600;list-style:none;display:flex;align-items:center;gap:.5em}
+details.group summary::-webkit-details-marker{display:none}
+details.group summary::before{content:"▸";color:var(--grey);font-size:.9em;transition:transform .15s}
+details.group[open] summary::before{transform:rotate(90deg)}
+details.group .list{margin:.3em 0 .3em 1.4em;font-size:.95rem}
+details.group .list li{padding:.4em 0}
+.ecard{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:14px 18px;margin:.8em 0}
+.ecard b{font-size:1.05rem}
+p.series{font-size:.88rem;background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:8px 14px;margin:0 0 1.2em;line-height:1.7}
+p.series strong{color:var(--accent)}
+footer .foot{margin:0 0 .4em}
+
+
+/* 圖表色取自霧藍紙色盤（style.css 的變數），深色模式隨之切換：純樂器＝--line、純雜音＝--accent、
+   混合＝--rule（淡底）、靜音＝空心框。--grey 與 --line 在深色模式幾乎同色，不用於類別。 */
+.viz-root{--c-inst:var(--line);--c-noise:var(--accent);--c-mixed:var(--rule);--c-sil:transparent}
+.viz .seg.sil{stroke:var(--grey);stroke-width:1;stroke-dasharray:3 2}
+.legend i.sil{border:1px dashed var(--grey)}
+.viz{width:100%;height:auto;display:block;margin:.5rem 0 1rem;font-size:12px}
+.viz .grid{stroke:var(--rule);stroke-width:1}.viz .axis{stroke:var(--grey);stroke-width:1}
+.viz .tick{fill:var(--grey);font-size:11px}.viz .lab{fill:var(--ink);font-size:12px}.viz .sub{fill:var(--grey);font-size:10px}
+.viz .inlab{fill:var(--bg);font-size:11px;font-weight:600;pointer-events:none}
+.viz .thr{stroke:var(--ink);stroke-width:1;stroke-dasharray:3 3}.viz .thrlab{fill:var(--ink);font-size:11px}
+.viz .seg:hover,.viz .seg:focus{opacity:.8;outline:none}
+.legend{display:flex;flex-wrap:wrap;gap:1rem;font-size:.9rem}.legend .key{display:inline-flex;align-items:center;gap:.35rem}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+#tip{position:fixed;pointer-events:none;background:var(--card);color:var(--ink);border:1px solid var(--rule);border-radius:6px;padding:.3rem .5rem;font-size:12px;max-width:22rem;display:none;z-index:9}
+details.tbl summary{cursor:pointer;color:var(--line)}
+
+.viz-root{--c-vocal:var(--pink)}
+blockquote{margin:.6em 0;padding:.5em 1em;border-left:3px solid var(--rule);background:var(--card);font-size:.92rem}
+nav.toc{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:12px 18px;margin:18px 0}
+nav.toc ol{margin:.3em 0 0;padding-left:1.4em}
+.small{font-size:.86rem;color:var(--grey)}
+pre{white-space:pre-wrap;word-break:break-word;background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:10px 12px;font-size:.84rem}
+.flow .box{fill:var(--card);stroke:var(--line);stroke-width:1.2}.flow .box.hl{fill:var(--paper);stroke-width:2}
+.flow .sbox{fill:var(--bg);stroke:var(--grey);stroke-width:1}.flow .dash{stroke-dasharray:4 3}
+.flow .bt{fill:var(--ink);font-size:13.5px}.flow .st{fill:var(--ink);font-size:12px}.flow .note{fill:var(--accent);font-size:11.5px}
+.flow .arrow{stroke:var(--grey);stroke-width:1.3}.flow .ahead{fill:var(--grey)}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+<p class="crumb"><a href="index.html">戰前 78 轉分軌標註</a> › 工作流程與實驗</p>
+<h1>工作流程、決策與實驗紀錄</h1>
+<p class="sub">我們想從分離後的唱片軌裡找出什麼、怎麼找、為什麼這樣找，以及到目前為止試過什麼。</p>
+<p class="meta">更新 2026-11-16</p>
+</div></header>
+<main class="wrap viz-root">
+
+<div class="card"><b>這頁寫給沒有參與討論的人。</b>首頁只有結果；這裡說明我們想解決什麼問題、流程每一步怎麼做、為什麼這樣決定，以及到目前為止做過的實驗與結論。
+所有類別都還沒有經過人工標註驗證，數字表示模型之間的一致程度，不是正確率。</div>
+
+<nav class="toc"><b>目錄</b><ol>
+<li><a href="#goal">目的：要找出什麼樣的片段</a></li>
+<li><a href="#data">資料</a></li>
+<li><a href="#pipeline">流程</a></li>
+<li><a href="#decisions">關鍵決定與理由</a></li>
+<li><a href="#gold">黃金標準：怎麼驗證</a></li>
+<li><a href="#alm">實驗一：讓音訊語言模型聽，作為審查</a></li>
+<li><a href="#extract">實驗二：換一個文字模型來抽取</a></li>
+<li><a href="#window">實驗三：窗長 4、8、10 秒</a></li>
+<li><a href="#use">使用下載清單的建議</a></li>
+<li><a href="#next">目前結論與下一步</a></li>
+<li><a href="#params">附錄：實驗參數（模型、門檻、提示詞全文）</a></li>
+</ol></nav>
+
+<h2 id="goal">1. 目的：要找出什麼樣的片段</h2>
+<p>我們手上有一批日治時期到戰後的臺灣唱片數位檔，已經用 demucs（htdemucs）分離成人聲軌與伴奏軌。目標是從分離後的軌裡，<b>找出可以直接拿來當訓練素材的片段</b>：</p>
+<ul>
+<li><b>純樂器</b>：只有樂器，沒有人聲殘留。可以當作分離或生成模型的器樂素材。</li>
+<li><b>純雜音</b>：只有唱片表面雜音（嘶聲、爆音、低頻隆隆聲），沒有音樂。可以當作資料增強時加入的真實雜音。</li>
+<li>人聲軌也有對應的類別（純人聲），但目前全量只跑伴奏軌。</li>
+</ul>
+<p><b>原則是精確率優先</b>：寧可少收，也不要把帶人聲殘留的片段當成純樂器。訓練素材裡混進錯誤樣本，傷害比少一點素材大。所以只要模型之間有疑義，段落一律歸入「混合」，不進下載清單。</p>
+
+<h2 id="data">2. 資料</h2>
+<ul>
+<li><b>音檔</b>：1,801 首，伴奏軌合計約 124.6 小時；WAV、44.1 kHz。路徑格式 <code>&lt;唱片公司資料夾&gt;/htdemucs/&lt;曲名&gt;/no_vocals.wav</code>。</li>
+<li><b>載體</b>：戰前 78 轉為主，另有日文 78 轉、戰後 78 轉、黑膠與錄音帶。不同載體的雜音特性不同，所有輸出都帶 <code>medium</code> 欄。</li>
+<li><b>曲種與年代</b>：約一半的曲目可以對應到唱片目錄（林太崴整理的 metadata），得知曲種（流行歌、歌仔戲、講談、南管、北管等）與錄音年代。這些資訊<b>只用在分層抽樣與統計</b>，不給模型看，理由見下方實驗一。</li>
+</ul>
+
+<h2 id="pipeline">3. 流程</h2>
+<svg class="viz flow" viewBox="0 0 734 564" role="img" aria-label="處理流程圖">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ahead"/></marker></defs>
+<rect class="box" x="16" y="2" width="380" height="40" rx="7"/><text class="bt" x="206.0" y="27.0" text-anchor="middle">唱片數位檔：1,801 首、約 125 小時</text>
+<line class="arrow" x1="206.0" y1="42" x2="206.0" y2="70" marker-end="url(#ah)"/>
+<rect class="box" x="16" y="72" width="380" height="40" rx="7"/><text class="bt" x="206.0" y="97.0" text-anchor="middle">demucs htdemucs 分離：伴奏軌、人聲軌</text>
+<line class="arrow" x1="206.0" y1="112" x2="206.0" y2="140" marker-end="url(#ah)"/>
+<line class="arrow" x1="396" y1="92.0" x2="450" y2="92.0" marker-end="url(#ah)"/><rect class="sbox" x="452" y="74" width="266" height="36" rx="7"/><text class="st" x="585.0" y="96.5" text-anchor="middle">人聲軌只計算音量，不跑模型</text>
+<rect class="box" x="16" y="142" width="380" height="40" rx="7"/><text class="bt" x="206.0" y="167.0" text-anchor="middle">切窗：8 秒、步距 4 秒（110,329 窗）</text>
+<line class="arrow" x1="206.0" y1="182" x2="206.0" y2="210" marker-end="url(#ah)"/>
+<rect class="box" x="16" y="212" width="380" height="40" rx="7"/><text class="bt" x="206.0" y="237.0" text-anchor="middle">音量 RMS &lt; −60 dB？</text>
+<line class="arrow" x1="206.0" y1="252" x2="206.0" y2="280" marker-end="url(#ah)"/>
+<line class="arrow" x1="396" y1="232.0" x2="450" y2="232.0" marker-end="url(#ah)"/><rect class="sbox" x="452" y="214" width="266" height="36" rx="7"/><text class="st" x="585.0" y="236.5" text-anchor="middle">是 → 靜音</text>
+<rect class="box hl" x="16" y="282" width="380" height="40" rx="7"/><text class="bt" x="206.0" y="307.0" text-anchor="middle">AST（16 kHz）＋CLAP（48 kHz）打分</text>
+<line class="arrow" x1="206.0" y1="322" x2="206.0" y2="350" marker-end="url(#ah)"/>
+<line class="arrow" x1="396" y1="302.0" x2="450" y2="302.0" marker-end="url(#ah)"/><rect class="sbox" x="452" y="284" width="266" height="36" rx="7"/><text class="st" x="585.0" y="306.5" text-anchor="middle">各存前 10 名 → windows_top10</text>
+<rect class="box hl" x="16" y="352" width="380" height="40" rx="7"/><text class="bt" x="206.0" y="377.0" text-anchor="middle">規則：兩個模型都同意才給純類別</text>
+<line class="arrow" x1="206.0" y1="392" x2="206.0" y2="420" marker-end="url(#ah)"/>
+<line class="arrow dash" x1="396" y1="372.0" x2="450" y2="372.0" marker-end="url(#ah)"/><rect class="sbox dash" x="452" y="354" width="266" height="36" rx="7"/><text class="st" x="585.0" y="376.5" text-anchor="middle">邊界案例 → 音訊語言模型審查（實驗一、二）</text>
+<rect class="box" x="16" y="422" width="380" height="40" rx="7"/><text class="bt" x="206.0" y="447.0" text-anchor="middle">類別：純樂器／純雜音／混合</text>
+<line class="arrow" x1="206.0" y1="462" x2="206.0" y2="490" marker-end="url(#ah)"/>
+<line class="arrow dash" x1="396" y1="442.0" x2="450" y2="442.0" marker-end="url(#ah)"/><rect class="sbox dash" x="452" y="424" width="266" height="36" rx="7"/><text class="st" x="585.0" y="446.5" text-anchor="middle">黃金標準：人工試聽 240 窗</text>
+<rect class="box" x="16" y="492" width="380" height="40" rx="7"/><text class="bt" x="206.0" y="517.0" text-anchor="middle">同一首相鄰同類窗合併 → segments_pure</text>
+<path class="arrow dash" d="M492,424 L492,407.0 L336,407.0 L336,394" fill="none" marker-end="url(#ah)"/><text class="note" x="500" y="418.0">校正規則門檻（Wilson 下界）</text>
+</svg>
+<p class="small">實線是全量管線；虛線是審查與驗證（不參與全量判定）。深色框的模型與規則參數見<a href="#params">附錄</a>。</p>
+<ol>
+<li><b>切窗</b>：每首切成 8 秒窗、步距 4 秒（相鄰兩窗重疊一半）。</li>
+<li><b>靜音</b>：窗的音量（RMS）低於 -60 dB 直接判為靜音。</li>
+<li><b>兩個模型打分</b>：
+  <ul><li><b>AST</b>（MIT/ast-finetuned-audioset-10-10-0.4593）：在 AudioSet 的 527 類上給分，我們看 Music、各樂器類、人聲類的分數。</li>
+  <li><b>CLAP</b>（laion/clap-htsat-unfused）：零樣本分類，拿音訊和一組我們寫的英文描述句比相似度（例如「a bowed two-string Chinese fiddle playing a melody」「vinyl crackle and surface noise, with no music」）。</li></ul>
+  兩個模型各保留前 10 名，存在 <code>windows_top10.parquet</code>，讓使用者可以自訂門檻。</li>
+<li><b>規則判類</b>：兩個模型都同意才給純類別。純樂器：音樂或樂器分數 ≥ 0.2、人聲分數 &lt; 0.05、CLAP 第一名是樂器句。純雜音：音樂、樂器、人聲分數都 &lt; 0.05，CLAP 第一名是雜音句。其餘一律「混合」。</li>
+<li><b>合併</b>：同一首裡相鄰的同類窗合併成連續區段，就是 <code>segments_pure</code> 的每一列。</li>
+<li><b>驗證</b>（進行中）：人工試聽一批分層抽樣的窗，建立黃金標準，再回頭校正門檻（見第 5 節）。</li>
+</ol>
+<p>流程的入口是單一腳本與一份設定檔，環境、套件版本與模型版本都已固定，任何一次執行都可以重跑出相同結果。完整參數與提示詞全文見<a href="#params">附錄</a>。</p>
+
+<h2 id="decisions">4. 關鍵決定與理由</h2>
+<div class=tablewrap><table><thead><tr><th>決定</th><th>理由</th></tr></thead><tbody>
+<tr><td>主判斷用 AST＋CLAP 加規則，不用大型語言模型</td><td>兩者快（全量 1,801 首約 1 小時），而且輸出連續分數，可以依人工標註設定門檻、控制精確率。音訊語言模型只輸出文字，沒有信心分數，全量也要跑約 8 天（見實驗一）。</td></tr>
+<tr><td>只收兩個模型都同意的段落</td><td>精確率優先。兩個模型的錯誤型態不同，同時出錯的機率較低。</td></tr>
+<tr><td>提示詞寫「vinyl」，不寫 shellac 或 78 rpm，也不寫「old opera recording」這類年代字眼</td><td>試跑發現，句子裡帶「老錄音」「歌劇」的提示詞會把雜音段吸過去，判成有人聲。模型對罕見詞的理解也不可靠。</td></tr>
+<tr><td>樂器以聲音內容描述（拉弦、彈撥、嗩吶、鑼鼓），不用樂種名稱</td><td>模型不認得「北管」「南管」，但聽得出拉弦樂器或打擊樂。單獨的鑼鼓也算樂器。</td></tr>
+<tr><td>曲種、年代等 metadata 不給模型</td><td>實驗一證實：給了 metadata，模型會依文字而不是依聲音作答，把純雜音說成有人在唱。</td></tr>
+<tr><td>8 秒窗</td><td>試跑時 10 秒窗讓 AST 在靜音段的 Music 分數升高，4 秒窗讓 CLAP 不穩；8 秒兩者都穩定。尚待黃金標準確認，所以 4 與 10 秒也跑全量對照（實驗三）。</td></tr>
+<tr><td>保留 track 與曲目分組</td><td>同一首曲目的不同窗、同一齣戲的不同面高度相關。切訓練與測試集時要依曲目分組，否則會洩漏。</td></tr>
+</tbody></table></div>
+
+<h2 id="gold">5. 黃金標準：怎麼驗證</h2>
+<p>到目前為止所有比較都是「模型對模型」，沒有人知道誰對。黃金標準是人工試聽後給的標籤，用途有兩個：校正規則門檻，讓每一類的精確率 95% 信賴下界（Wilson 下界）達到 0.95；以及評比不同方法、不同窗長誰比較準。</p>
+<h3>Wilson 下界是什麼</h3>
+<p>從某一類（例如純樂器）抽 n 段來聽，k 段確實正確，樣本精確率是 k/n。樣本有限，真正的精確率可能更高或更低；Wilson 信賴區間（Wilson score interval）給出 95% 的範圍，我們只看<b>下界</b>：有 95% 的把握，真正的精確率不低於它。</p>
+<p>不用課本常見的 p̂ ± 1.96√(p̂(1−p̂)/n)，是因為那個公式在比例接近 1、樣本少時會失靈：聽 20 段全對，它給出寬度為 0 的區間，等於宣稱精確率確定是 100%；Wilson 下界則是 0.84，誠實反映樣本太少。要讓下界達到 0.95，需要的樣本數：</p>
+<div class=tablewrap><table><thead><tr><th class=num>抽聽中判錯</th><th class=num>至少要聽</th></tr></thead><tbody>
+<tr><td class=num>0 段</td><td class=num>73 段</td></tr><tr><td class=num>1 段</td><td class=num>110 段</td></tr>
+<tr><td class=num>2 段</td><td class=num>142 段</td></tr><tr><td class=num>3 段</td><td class=num>173 段</td></tr></tbody></table></div>
+<p>若某一類聽 100 段錯 5 段，下界只有 0.89，就把該類的門檻收緊、少收一些段落，直到下界過 0.95。這就是「依黃金標準校正門檻」的具體做法。保留：Wilson 假設各段獨立，但重疊窗與同一首內的段落高度相關，實際不確定性更大；所以抽黃金標準時每首最多取 2 窗、分散到不同曲目。</p>
+<h3>兩輪抽樣</h3>
+<ul>
+<li><b>第 1 輪</b>：120 個 8 秒窗，依曲種 × 年代分層隨機抽樣，約兩成取自曲前曲後的空轉段（雜音最集中的地方）。</li>
+<li><b>第 2 輪</b>：120 個窗，專挑邊界案例：AST 與 CLAP 意見不同、分數接近門檻、音量接近靜音線、音訊語言模型與規則不一致等。標註時看不到模型的判斷，避免先入為主。</li>
+<li>兩條軌各標一次，類別與上方相同，另標人聲型態（唱、說）、分離殘留、雜音程度。試聽工具在實驗室內部網路，標註尚未完成。</li>
+</ul>
+
+<h2 id="alm">6. 實驗一：讓音訊語言模型聽，作為審查</h2>
+<p><b>想法</b>：AST 與 CLAP 只給分數，不會「解釋」。音訊語言模型（audio-language model，ALM）可以聽一段音訊、用文字描述聽到什麼，適合拿來審查規則判定的邊界案例。做法參考線上教學《LLMs × Music》的〈LLM-based Music Annotation〉（<a href="https://bkwmt.github.io/research-notes/notes/music-llm-annotation-demo.html">中文導讀</a>）：</p>
+<ol><li><b>描述</b>：模型聽音訊，用兩三句話描述樂器、人聲、雜音、靜音。貪婪解碼，重跑結果相同。</li>
+<li><b>抽取</b>：只把描述文字交給模型，填成固定欄位的 JSON：類別、人聲型態、殘留、雜音程度，以及一段「逐字抄自描述」的證據片語。</li></ol>
+<p><b>樣本</b>：305 段（第 2 輪黃金標準候選窗的兩條軌，加上分層抽樣）。<b>對照組</b>：描述時帶或不帶 metadata（載體、曲種、年代）。另外換一個較小的模型 Audex-2B（NVIDIA，2B 參數，非商業授權）做第二意見。</p>
+<p class="legend"><span class="key"><i class="" style="background:var(--c-inst)"></i>純樂器</span><span class="key"><i class="" style="background:var(--c-vocal)"></i>純人聲</span><span class="key"><i class="" style="background:var(--c-noise)"></i>純雜音</span><span class="key"><i class="sil" style="background:var(--c-sil)"></i>靜音</span><span class="key"><i class="" style="background:var(--c-mixed)"></i>混合</span></p>
+<svg class="viz" viewBox="0 0 734 274" role="img" aria-label="各方法在 305 段上的類別比例">
+<line class="grid" x1="230.0" x2="230.0" y1="0" y2="256"/><text class="tick" x="230.0" y="270" text-anchor="middle">0%</text>
+<line class="grid" x1="350.0" x2="350.0" y1="0" y2="256"/><text class="tick" x="350.0" y="270" text-anchor="middle">25%</text>
+<line class="grid" x1="470.0" x2="470.0" y1="0" y2="256"/><text class="tick" x="470.0" y="270" text-anchor="middle">50%</text>
+<line class="grid" x1="590.0" x2="590.0" y1="0" y2="256"/><text class="tick" x="590.0" y="270" text-anchor="middle">75%</text>
+<line class="grid" x1="710.0" x2="710.0" y1="0" y2="256"/><text class="tick" x="710.0" y="270" text-anchor="middle">100%</text>
+<text class="lab" x="222" y="15.4" text-anchor="end">規則（AST＋CLAP）<tspan class="sub"> 伴奏軌</tspan></text>
+<rect class="seg" x="230.0" y="0" width="158.0" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="規則（AST＋CLAP）｜伴奏軌｜純樂器：33.3%（54 / 162 段）"/>
+<text class="inlab" x="236.0" y="15.4">33%</text>
+<rect class="seg" x="390.0" y="0" width="81.0" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="規則（AST＋CLAP）｜伴奏軌｜純雜音：17.3%（28 / 162 段）"/>
+<text class="inlab" x="396.0" y="15.4">17%</text>
+<rect class="seg" x="473.0" y="0" width="235.0" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="規則（AST＋CLAP）｜伴奏軌｜混合：49.4%（80 / 162 段）"/>
+<text class="lab" x="222" y="47.4" text-anchor="end">AF-Next（不帶 metadata）<tspan class="sub"> 伴奏軌</tspan></text>
+<rect class="seg" x="230.0" y="32" width="290.2" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="AF-Next（不帶 metadata）｜伴奏軌｜純樂器：60.9%（98 / 161 段）"/>
+<text class="inlab" x="236.0" y="47.4">61%</text>
+<rect class="seg" x="522.2" y="32" width="12.9" height="22" rx="4" style="fill:var(--c-vocal)" tabindex="0" data-tip="AF-Next（不帶 metadata）｜伴奏軌｜純人聲：3.1%（5 / 161 段）"/>
+<rect class="seg" x="537.1" y="32" width="162.0" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="AF-Next（不帶 metadata）｜伴奏軌｜純雜音：34.2%（55 / 161 段）"/>
+<text class="inlab" x="543.1" y="47.4">34%</text>
+<rect class="seg" x="701.1" y="32" width="6.9" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="AF-Next（不帶 metadata）｜伴奏軌｜混合：1.9%（3 / 161 段）"/>
+<text class="lab" x="222" y="79.4" text-anchor="end">AF-Next（帶 metadata）<tspan class="sub"> 伴奏軌</tspan></text>
+<rect class="seg" x="230.0" y="64" width="319.0" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="AF-Next（帶 metadata）｜伴奏軌｜純樂器：66.9%（107 / 160 段）"/>
+<text class="inlab" x="236.0" y="79.4">67%</text>
+<rect class="seg" x="551.0" y="64" width="49.0" height="22" rx="4" style="fill:var(--c-vocal)" tabindex="0" data-tip="AF-Next（帶 metadata）｜伴奏軌｜純人聲：10.6%（17 / 160 段）"/>
+<text class="inlab" x="557.0" y="79.4">11%</text>
+<rect class="seg" x="602.0" y="64" width="67.0" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="AF-Next（帶 metadata）｜伴奏軌｜純雜音：14.4%（23 / 160 段）"/>
+<text class="inlab" x="608.0" y="79.4">14%</text>
+<rect class="seg sil" x="671.0" y="64" width="4.0" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="AF-Next（帶 metadata）｜伴奏軌｜靜音：1.2%（2 / 160 段）"/>
+<rect class="seg" x="677.0" y="64" width="31.0" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="AF-Next（帶 metadata）｜伴奏軌｜混合：6.9%（11 / 160 段）"/>
+<text class="lab" x="222" y="111.4" text-anchor="end">Audex-2B（不帶 metadata）<tspan class="sub"> 伴奏軌</tspan></text>
+<rect class="seg" x="230.0" y="96" width="87.4" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="Audex-2B（不帶 metadata）｜伴奏軌｜純樂器：18.6%（30 / 161 段）"/>
+<text class="inlab" x="236.0" y="111.4">19%</text>
+<rect class="seg" x="319.4" y="96" width="72.5" height="22" rx="4" style="fill:var(--c-vocal)" tabindex="0" data-tip="Audex-2B（不帶 metadata）｜伴奏軌｜純人聲：15.5%（25 / 161 段）"/>
+<text class="inlab" x="325.4" y="111.4">16%</text>
+<rect class="seg" x="394.0" y="96" width="81.5" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="Audex-2B（不帶 metadata）｜伴奏軌｜純雜音：17.4%（28 / 161 段）"/>
+<text class="inlab" x="400.0" y="111.4">17%</text>
+<rect class="seg" x="477.5" y="96" width="230.5" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="Audex-2B（不帶 metadata）｜伴奏軌｜混合：48.4%（78 / 161 段）"/>
+<text class="lab" x="222" y="143.4" text-anchor="end">規則（AST＋CLAP）<tspan class="sub"> 人聲軌</tspan></text>
+<rect class="seg" x="230.0" y="128" width="199.4" height="22" rx="4" style="fill:var(--c-vocal)" tabindex="0" data-tip="規則（AST＋CLAP）｜人聲軌｜純人聲：42.0%（60 / 143 段）"/>
+<text class="inlab" x="236.0" y="143.4">42%</text>
+<rect class="seg" x="431.4" y="128" width="24.9" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="規則（AST＋CLAP）｜人聲軌｜純雜音：5.6%（8 / 143 段）"/>
+<rect class="seg" x="458.3" y="128" width="249.7" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="規則（AST＋CLAP）｜人聲軌｜混合：52.4%（75 / 143 段）"/>
+<text class="lab" x="222" y="175.4" text-anchor="end">AF-Next（不帶 metadata）<tspan class="sub"> 人聲軌</tspan></text>
+<rect class="seg" x="230.0" y="160" width="95.3" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="AF-Next（不帶 metadata）｜人聲軌｜純樂器：20.3%（29 / 143 段）"/>
+<text class="inlab" x="236.0" y="175.4">20%</text>
+<rect class="seg" x="327.3" y="160" width="236.3" height="22" rx="4" style="fill:var(--c-vocal)" tabindex="0" data-tip="AF-Next（不帶 metadata）｜人聲軌｜純人聲：49.7%（71 / 143 段）"/>
+<text class="inlab" x="333.3" y="175.4">50%</text>
+<rect class="seg" x="565.7" y="160" width="28.2" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="AF-Next（不帶 metadata）｜人聲軌｜純雜音：6.3%（9 / 143 段）"/>
+<rect class="seg" x="595.9" y="160" width="112.1" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="AF-Next（不帶 metadata）｜人聲軌｜混合：23.8%（34 / 143 段）"/>
+<text class="lab" x="222" y="207.4" text-anchor="end">AF-Next（帶 metadata）<tspan class="sub"> 人聲軌</tspan></text>
+<rect class="seg" x="230.0" y="192" width="106.9" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="AF-Next（帶 metadata）｜人聲軌｜純樂器：22.7%（32 / 141 段）"/>
+<text class="inlab" x="236.0" y="207.4">23%</text>
+<rect class="seg" x="338.9" y="192" width="175.0" height="22" rx="4" style="fill:var(--c-vocal)" tabindex="0" data-tip="AF-Next（帶 metadata）｜人聲軌｜純人聲：36.9%（52 / 141 段）"/>
+<text class="inlab" x="344.9" y="207.4">37%</text>
+<rect class="seg" x="516.0" y="192" width="21.8" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="AF-Next（帶 metadata）｜人聲軌｜純雜音：5.0%（7 / 141 段）"/>
+<rect class="seg" x="539.8" y="192" width="168.2" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="AF-Next（帶 metadata）｜人聲軌｜混合：35.5%（50 / 141 段）"/>
+<text class="lab" x="222" y="239.4" text-anchor="end">Audex-2B（不帶 metadata）<tspan class="sub"> 人聲軌</tspan></text>
+<rect class="seg" x="230.0" y="224" width="21.7" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="Audex-2B（不帶 metadata）｜人聲軌｜純樂器：4.9%（7 / 142 段）"/>
+<rect class="seg" x="253.7" y="224" width="156.9" height="22" rx="4" style="fill:var(--c-vocal)" tabindex="0" data-tip="Audex-2B（不帶 metadata）｜人聲軌｜純人聲：33.1%（47 / 142 段）"/>
+<text class="inlab" x="259.7" y="239.4">33%</text>
+<rect class="seg" x="412.5" y="224" width="11.5" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="Audex-2B（不帶 metadata）｜人聲軌｜純雜音：2.8%（4 / 142 段）"/>
+<rect class="seg" x="426.1" y="224" width="281.9" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="Audex-2B（不帶 metadata）｜人聲軌｜混合：59.2%（84 / 142 段）"/>
+</svg>
+<div class=tablewrap><table><thead><tr><th>描述與抽取</th><th class=num>嚴格 JSON</th><th class=num>欄位全部有效</th><th class=num>類別與規則一致</th><th class=num>規則純雜音段<br>判為純雜音</th><th class=num>每段耗時</th></tr></thead><tbody><tr><td>AF-Next（不帶 metadata）</td><td class=num>304／305</td><td class=num>281／305</td><td class=num>46.1%</td><td class=num>29／36</td><td class=num>6.0 秒</td></tr><tr><td>AF-Next（帶 metadata）</td><td class=num>301／305</td><td class=num>294／305</td><td class=num>38.9%</td><td class=num>15／36</td><td class=num>6.3 秒</td></tr><tr><td>Audex-2B（不帶 metadata）</td><td class=num>303／305</td><td class=num>274／305</td><td class=num>48.2%</td><td class=num>19／36</td><td class=num>1.0 秒</td></tr></tbody></table></div>
+<p class="small">「欄位全部有效」要求五個欄位都對得上；AF-Next 的失敗多半只是殘留欄輸出 null，類別仍然有效，所以一致率以「類別有值」的段落計算。規則判為純雜音的段落共 36 段。</p>
+
+<h3>發現一：給 metadata 會讓模型憑文字作答</h3>
+<p>規則判為純雜音的 36 段，不帶 metadata 時 AF-Next 有 29 段判為純雜音；帶了 metadata 只剩 15 段。同一段只有低頻隆隆聲的伴奏軌：</p>
+<blockquote><b>不帶</b>：The audio features a continuous, low‑frequency hum that sounds like a large engine or heavy machinery running at a steady pace. The hum is deep and resonant, with a subtle, rhythmic pulsation that suggests the engine is idling or moving at a constant speed. No speech, music, or other distinct sounds are audible. The recording is dominated by this mechanical noise, with no background ambience or additional layers.</blockquote>
+<blockquote><b>帶</b>（提示詞前加上「This is one separated stem from a c. 1926 Taiwanese record; genre: Taiwanese opera (koa-a-hi).」）：The audio contains a low‑fidelity recording of a Taiwanese opera performance. A male tenor sings with a clear, resonant voice, accompanied by traditional Chinese instruments such as a guqin and a dulcimer, which provide a gentle, plucked melodic backdrop. The recording is slightly noisy, with a faint background hiss and a subtle crackle that suggests an old vinyl source, but the overall sound remains clean and well‑balanced. The performance is calm and expressive, with no speech or extraneous sounds.</blockquote>
+<p>模型看到「Taiwanese opera」就描述出男高音和古琴。結論：<b>描述階段一律不給 metadata</b>。metadata 最多只在確認有人聲之後，用來判斷是唱還是說（講談類在帶 metadata 時全部判為說話）。</p>
+
+<h3>發現二：小模型的描述撐不起抽取</h3>
+<p>Audex-2B 快約 6 倍（每段約 1.0 秒），但描述很短，常編出不存在的聲音。規則判為純雜音的段落，它的描述例如：</p>
+<ul><li>A person is spraying something with a spray bottle.</li><li>The sound of a frying pan is heard. There is no singing or speech. There is a vinyl surface noise, hiss, and crackle.</li><li>A person is opening a package of cigarettes.</li><li>A male voice is singing &#x27;Thank you&#x27; in a low pitch.</li><li>The sound of someone walking on gravel is audible. There is no singing or speech. There is a slight hiss and crackle from the vinyl surface.</li></ul>
+<p>它也傾向判「混合」（伴奏軌過半），和規則的一致率只有 48.2%，純雜音段只抓到 19／36。結論：<b>不採用 Audex-2B</b>。若要第二個音訊模型，應找音樂專用的大模型。</p>
+
+<h3>發現三：音訊語言模型不適合當主判斷</h3>
+<p>AF-Next 每段約 6 秒，全量 11 萬段要約 8 天；輸出沒有信心分數，無法設門檻；帶與不帶 metadata 的類別一致率只有六成。所以它的角色是<b>審查邊界案例</b>，不是標註全量。</p>
+
+<h2 id="extract">7. 實驗二：換一個文字模型來抽取</h2>
+<p><b>想法</b>：第二段抽取只看文字，可以換成更強的文字模型。我們拿 AF-Next 已經寫好的 610 筆描述（305 段 × 帶或不帶 metadata），交給筆電上的 gemma-4-31b-it、gpt-oss-120b 重新抽取。提示詞與原本逐字相同，只多加一條 JSON schema，強制輸出合法 JSON。</p>
+<div class=tablewrap><table><thead><tr><th>描述條件</th><th>抽取模型</th><th class=num>JSON 有效</th><th class=num>類別與 AF-Next 自抽一致</th><th class=num>類別與規則一致</th><th class=num>evidence 逐字出自描述</th><th class=num>規則純雜音段<br>判為純雜音</th></tr></thead><tbody><tr><td>不帶 metadata</td><td>AF-Next 自己抽取</td><td class=num>281／305</td><td class=num>（自身）</td><td class=num>46.1%</td><td class=num>58.4%</td><td class=num>29／36</td></tr><tr><td>不帶 metadata</td><td>gemma-4-31b-it</td><td class=num>305／305</td><td class=num>92.4%</td><td class=num>47.2%</td><td class=num>94.8%</td><td class=num>31／36</td></tr><tr><td>不帶 metadata</td><td>gpt-oss-120b</td><td class=num>305／305</td><td class=num>92.1%</td><td class=num>47.5%</td><td class=num>85.6%</td><td class=num>31／36</td></tr><tr><td>帶 metadata</td><td>AF-Next 自己抽取</td><td class=num>294／305</td><td class=num>（自身）</td><td class=num>38.9%</td><td class=num>49.8%</td><td class=num>15／36</td></tr><tr><td>帶 metadata</td><td>gemma-4-31b-it</td><td class=num>305／305</td><td class=num>88.4%</td><td class=num>43.6%</td><td class=num>91.1%</td><td class=num>13／36</td></tr><tr><td>帶 metadata</td><td>gpt-oss-120b</td><td class=num>305／305</td><td class=num>87.4%</td><td class=num>43.3%</td><td class=num>93.4%</td><td class=num>13／36</td></tr></tbody></table></div>
+<ul>
+<li><b>格式問題消失</b>：schema 強制下 JSON 全部有效；證據片語逐字出自描述的比例大幅提高，「抽取結果必須能在描述裡找到根據」這道檢查才真的能用。</li>
+<li><b>類別大致不變</b>：類別主要由描述決定，換抽取模型改變不大。主要差異是 AF-Next 判純人聲、本機模型改判混合：gemma-4-31b-it（不帶 metadata）11 段；gemma-4-31b-it（帶 metadata）19 段；gpt-oss-120b（不帶 metadata）12 段；gpt-oss-120b（帶 metadata）19 段。描述裡提到隱約伴奏時，本機模型照定義歸為混合，比較嚴格。</li>
+<li><b>聽錯救不回來</b>：帶 metadata 時雜音已經被描述成音樂，換什麼抽取模型都一樣判錯。描述階段不給 metadata，比換抽取模型重要得多。</li>
+<li><b>兩個本機模型彼此一致</b>（gemma-4-31b-it 對 gpt-oss-120b）：不帶 metadata：類別 98.0%、殘留 78.0%、雜音程度 82.6%；帶 metadata：類別 96.4%、殘留 63.9%、雜音程度 79.0%。類別幾乎一樣，殘留與雜音程度分歧較大，因為描述很少明說這兩件事，模型只能推測。這兩欄目前不宜直接採用。</li><li><b>速度</b>：gpt-oss-120b 610 筆約 13 分鐘（每筆約 1.2 秒）；gemma-4-31b-it 約 80 分鐘（每筆約 8 秒）。gpt-oss 是混合專家模型，每個 token 只動用約 5B 參數；gemma 是 31B 稠密模型，所以慢得多。結果相近時選 gpt-oss。</li>
+</ul>
+
+<h2 id="window">8. 實驗三：窗長 4、8、10 秒</h2>
+<p>窗太短，模型資訊不足、分數不穩；窗太長，短暫的人聲殘留會被平均掉，或把靜音和音樂混在一起。目前只用 8 秒窗做下載清單。</p>
+<div class="card">4 秒窗（步距 2 秒）與 10 秒窗（步距 5 秒）的全量正在實驗室工作站執行，完成後本節會補上三種窗長的時數與類別比較。下載清單目前是 8 秒版。</div>
+
+<h2 id="use">9. 使用下載清單的建議</h2>
+<ul>
+<li><b>先抽聽</b>：類別未經人工驗證。建議先從每個載體各抽 20 到 30 段聽過，再決定要不要整批使用。</li>
+<li><b>想更保守就收緊門檻</b>：<code>segments_pure</code> 帶有區段內最差的分數，例如只取 <code>ast_voice_max &lt; 0.02</code> 的純樂器段，可以進一步降低人聲殘留的風險；<code>windows_top10</code> 可以完全自訂規則。</li>
+<li><b>依曲目分組切分</b>：同一首（同一個 <code>stem_path</code>）的區段不要同時出現在訓練與測試集。</li>
+<li><b>純雜音的來源偏向曲前曲後</b>：空轉段的雜音和曲中音樂底下的雜音特性可能不同，需要時可依 <code>start</code> 與曲長區分。</li>
+<li><b>分離殘留</b>：伴奏軌的錯誤主要是人聲殘留；demucs 對某些樂器（例如洞簫）會誤放進人聲軌，所以伴奏軌的純樂器段可能缺了這類樂器。</li>
+</ul>
+
+<h2 id="next">10. 目前結論與下一步</h2>
+<ol>
+<li>主判斷維持 AST＋CLAP＋規則；音訊語言模型只審查邊界案例，描述時不給 metadata。</li>
+<li>第二段抽取改用本機文字模型加 JSON schema，取代 AF-Next 自己抽取。</li>
+<li>完成黃金標準兩輪標註後：校正門檻，並在同一批段落上比較規則、AF-Next、本機抽取與三種窗長的精確率，再決定下載清單的最終版本。</li>
+<li>人聲軌目前只算音量，之後視需要補跑模型。</li>
+</ol>
+
+<h2 id="params">附錄：實驗參數</h2>
+<p>以下數值與文字取自實際執行的設定檔與提示詞檔（工作站 <code>configs/full_instrumental.yaml</code>、<code>prompts.yaml</code>、
+<code>run_meta.json</code>），不是事後整理。</p>
+
+<h3>A. 全量執行（下載清單的來源）</h3>
+<div class=tablewrap><table><thead><tr><th>項目</th><th>設定</th></tr></thead><tbody><tr><td>執行編號</td><td><code>full_nv_20261116_1303</code></td></tr><tr><td>切窗</td><td>窗長 8 秒、步距 4 秒；只對伴奏軌（no_vocals）跑模型，人聲軌只計算音量</td></tr><tr><td>AST</td><td><code>MIT/ast-finetuned-audioset-10-10-0.4593</code>，revision <code>f826b80d</code>；輸入 16 kHz 單聲道；batch 32；527 類各取 sigmoid</td></tr><tr><td>CLAP</td><td><code>laion/clap-htsat-unfused</code>，revision <code>8fa0f1c6</code>；輸入 48 kHz；batch 32；音訊與 14 句提示詞的 cosine 相似度，類別取第一名提示詞所屬類別；匯出的機率以 softmax（logit scale 100）計算</td></tr><tr><td>前 k 名</td><td>AST 與 CLAP 各 10 名</td></tr><tr><td>CLAP 提示詞版本</td><td>v3（見 C）</td></tr><tr><td>隨機種子</td><td>20261116</td></tr><tr><td>環境</td><td>Python 3.12.16、torch 2.6.0+cu124、transformers 5.22.2、NVIDIA GeForce RTX 4080</td></tr><tr><td>耗時</td><td>1,801 首約 61 分鐘（讀檔與重採樣 16、AST 23、CLAP 21 分鐘）；GPU 峰值 2.26 GiB</td></tr></tbody></table></div>
+
+<h3>B. 判定規則</h3>
+<p>AST 分數分成三組：<b>Music</b>（AudioSet 索引 137）、<b>樂器</b>（Musical instrument 子樹，索引 138～213，排除 Bicycle bell、Tuning fork；含打擊樂與鑼，所以只有鑼鼓也算樂器）、<b>人聲</b>（Speech、Male／Female／Child speech、Conversation、Narration、Singing、Choir、Chant、Male／Female／Child singing、Humming、Vocal music 等），每組取最大值。</p>
+<div class=tablewrap><table><thead><tr><th>類別</th><th>條件</th></tr></thead><tbody><tr><td>靜音</td><td>RMS &lt; -60 dB</td></tr><tr><td>純樂器（伴奏軌）</td><td>max(Music, 樂器) ≥ 0.2，且 人聲 &lt; 0.05，且 CLAP 第一名屬「樂器」</td></tr><tr><td>純雜音</td><td>Music、樂器、人聲皆 &lt; 0.05，且 CLAP 第一名屬「雜音」</td></tr><tr><td>純人聲（人聲軌，全量未跑）</td><td>max(人聲, Music) ≥ 0.2，且 樂器 &lt; 0.05，且 CLAP 第一名屬歌唱或說話</td></tr><tr><td>人聲殘留旗標（伴奏軌）</td><td>人聲 ≥ 0.1，或 CLAP 第一名屬歌唱或說話 → <code>residue = vocal_leak</code></td></tr><tr><td>混合</td><td>以上皆不成立</td></tr><tr><td>邊界案例（挑黃金標準用）</td><td>AST 分數與門檻比值在 1.5 倍內、CLAP 第一與第二類差 &lt; 0.02、RMS 在 -65～-55 dB</td></tr></tbody></table></div>
+
+<h3>C. CLAP 提示詞（v3）</h3>
+<p>改版紀錄：v2 用了「old opera recording」這類年代字眼，會把雜音段吸成人聲，v3 刪除；載體一律寫 vinyl；樂器以聲音內容描述。</p>
+<div class=tablewrap><table><thead><tr><th>類別</th><th>提示詞</th></tr></thead><tbody><tr><td>樂器</td><td><code>a bowed two-string Chinese fiddle playing a melody</code></td></tr><tr><td>樂器</td><td><code>a plucked lute playing a melody</code></td></tr><tr><td>樂器</td><td><code>suona, a loud double-reed horn</code></td></tr><tr><td>樂器</td><td><code>Chinese gongs, cymbals and drums</code></td></tr><tr><td>樂器</td><td><code>violin, piano, trumpet or clarinet playing a melody</code></td></tr><tr><td>樂器</td><td><code>a small band playing a melody</code></td></tr><tr><td>歌唱</td><td><code>a person singing without any instruments</code></td></tr><tr><td>歌唱</td><td><code>a high-pitched nasal opera singing voice</code></td></tr><tr><td>說話</td><td><code>a person speaking</code></td></tr><tr><td>說話</td><td><code>a storyteller telling a comic story</code></td></tr><tr><td>雜音</td><td><code>vinyl crackle and surface noise, with no music</code></td></tr><tr><td>雜音</td><td><code>vinyl record hiss and pops</code></td></tr><tr><td>混合</td><td><code>a singer accompanied by instruments</code></td></tr><tr><td>靜音</td><td><code>silence</code></td></tr></tbody></table></div>
+
+<h3>D. 音訊語言模型（實驗一）</h3>
+<div class=tablewrap><table><thead><tr><th>項目</th><th>設定</th></tr></thead><tbody><tr><td>樣本</td><td>305 段：第 2 輪黃金標準候選窗的兩條軌（217 段），加上其餘 pilot 窗依「軌 × 規則類別 × 載體」分層、每格 4 段（88 段）；種子 20261115</td></tr><tr><td>AF-Next</td><td><code>nvidia/audio-flamingo-next-hf</code>，revision <code>5634886e</code>；語言模型 8-bit 量化（音訊編碼器與投影層不量化），bf16；輸入 16 kHz；貪婪解碼；描述與抽取各最多 120 tokens</td></tr><tr><td>Audex-2B</td><td><code>nvidia/Nemotron-Labs-Audex-2B</code>，revision <code>77b7e1a4</code>；bf16；16 kHz、補零到 30 秒；貪婪解碼；描述 160、抽取 200 tokens；NVIDIA OneWay Noncommercial 授權（研究用途）</td></tr><tr><td>流程</td><td>第一段聽音訊、只描述；第二段只給描述文字、不給音訊、不給 metadata，輸出 JSON</td></tr><tr><td>對照組</td><td>描述時帶或不帶 metadata（提示詞 <code>describe</code> 與 <code>describe_meta</code>）</td></tr></tbody></table></div>
+<p><b>描述（不帶 metadata）</b></p><pre><code>Describe what is audible in this clip in two or three sentences. Name any instruments you hear, say whether there is singing or speech, describe any vinyl surface noise, hiss or crackle, and say if parts are silent. If you hear nothing clearly, say so. Describe only what you hear.</code></pre>
+<p><b>描述（帶 metadata）</b>：<code>{context}</code> 由模板 <code>This is one separated stem from a {era}{medium}; genre: {genre}.</code> 填入。</p><pre><code>{context} Describe what is audible in this clip in two or three sentences. Name any instruments you hear, say whether there is singing or speech, describe any vinyl surface noise, hiss or crackle, and say if parts are silent. If you hear nothing clearly, say so. Describe only what you hear.</code></pre>
+<p class="small">對照表：戰前78 → Taiwanese record；日文78 → Japanese-language record made for the Taiwan market；戰後78 → post-war Taiwanese record；黑膠與錄音帶 → Taiwanese vinyl LP or tape recording；流行歌 → popular song；歌仔戲 → Taiwanese opera (koa-a-hi)；講談 → comic monologue / storytelling (speech)；北管與京調 → beiguan or Peking opera；新歌劇 → new-style Taiwanese opera；南管 → nanguan；客家音樂 → Hakka music；器樂 → instrumental music；白字戲 → baiji opera；車鼓 → chhia-ko folk song and dance；相褒 → antiphonal folk song；皇民化類 → Japanese-era propaganda song；影片說明 → film narration (speech)；布袋戲 → glove puppet theatre；童謠 → children&#x27;s song；宗教音樂 → religious music；原住民音樂 → Indigenous music；日文歌謠 → Japanese song</p>
+<p><b>抽取</b>：<code>{stem}</code> 為 vocals 或 accompaniment；<code>{other}</code> 在人聲軌為 instruments，在伴奏軌為 voice (singing or speech)。以下是實際送出的文字（設定檔裡的 <code>{{</code> 是格式化跳脫，送出時為單一大括號）。</p><pre><code>Below is a description of one audio clip. The clip is the separated {stem} stem of an old record
+(a source-separation model split the record into a vocals stem and an accompaniment stem).
+Map the description to these fields, using only what the description says:
+- &quot;cls&quot;: one of &quot;pure_instrument&quot; (instruments only, no voice), &quot;pure_vocal&quot; (singing or speech only,
+  no instruments), &quot;pure_noise&quot; (only surface noise, hiss, crackle or hum, no music or voice),
+  &quot;silence&quot; (nothing audible), &quot;mixed&quot; (voice and instruments together, or unclear).
+- &quot;vocal_type&quot;: &quot;singing&quot;, &quot;speech&quot;, &quot;both&quot;, or null if there is no voice.
+- &quot;leak&quot;: true if the {stem} stem contains sound that belongs to the other stem
+  ({other} audible in a {stem} stem), otherwise false.
+- &quot;noise&quot;: &quot;none&quot;, &quot;light&quot; or &quot;heavy&quot; surface noise.
+- &quot;evidence&quot;: a short phrase (at most 12 words) copied word for word from the description that supports &quot;cls&quot;.
+Answer with one JSON object only, no other text. Use strict JSON: double quotes, true/false, null. Example:
+{&quot;cls&quot;: &quot;mixed&quot;, &quot;vocal_type&quot;: &quot;singing&quot;, &quot;leak&quot;: false, &quot;noise&quot;: &quot;light&quot;, &quot;evidence&quot;: &quot;a woman sings over a two-string fiddle&quot;}
+
+Description: {description}</code></pre>
+<p><b>同義詞對照</b>：模型輸出先轉小寫，再依下表歸為標準值；對不上的值記為解析失敗。</p>
+<div class=tablewrap><table><thead><tr><th>欄位</th><th>標準值</th><th>接受的寫法</th></tr></thead><tbody><tr><td>cls</td><td><code>pure_instrument</code></td><td>pure_instrument、instrument、instruments、instrumental、music、accompaniment、flute、strings、gongs、percussion</td></tr><tr><td>cls</td><td><code>pure_vocal</code></td><td>pure_vocal、vocal、vocals、voice、singing、speech、spoken</td></tr><tr><td>cls</td><td><code>pure_noise</code></td><td>pure_noise、noise、crackle、hiss、hum、surface_noise、static</td></tr><tr><td>cls</td><td><code>silence</code></td><td>silence、silent、nothing</td></tr><tr><td>cls</td><td><code>mixed</code></td><td>mixed、both、unclear、mixture</td></tr><tr><td>vocal_type</td><td><code>singing</code></td><td>singing、sung、song、chant、chanting</td></tr><tr><td>vocal_type</td><td><code>speech</code></td><td>speech、speaking、spoken、narration、talking</td></tr><tr><td>vocal_type</td><td><code>both</code></td><td>both、singing_and_speech、mixed</td></tr><tr><td>vocal_type</td><td><code>None</code></td><td>None、none、no、、n/a、absent</td></tr><tr><td>noise</td><td><code>none</code></td><td>none、no、clean、absent、null</td></tr><tr><td>noise</td><td><code>light</code></td><td>light、low、slight、faint、mild、moderate</td></tr><tr><td>noise</td><td><code>heavy</code></td><td>heavy、high、strong、loud、prominent</td></tr></tbody></table></div>
+
+<h3>E. 本機文字模型抽取（實驗二）</h3>
+<div class=tablewrap><table><thead><tr><th>項目</th><th>設定</th></tr></thead><tbody><tr><td>輸入</td><td>AF-Next 的 610 筆描述（305 段 × 帶或不帶 metadata），不重聽音訊</td></tr><tr><td>模型</td><td><code>gemma-4-31b-it</code>、<code>gpt-oss-120b</code>（在筆電以 LM Studio 執行；不使用中國開發的模型）</td></tr><tr><td>提示詞</td><td>與 D 的抽取提示詞逐字相同</td></tr><tr><td>解碼</td><td>temperature 0；gpt-oss 加 reasoning_effort = low</td></tr><tr><td>輸出限制</td><td>JSON schema：cls 與 noise 為列舉值，vocal_type 可為 null，leak 為布林，evidence 最多 120 字元；五欄皆必填</td></tr><tr><td>evidence 逐字檢查</td><td>去掉頭尾句點、轉小寫後，必須是描述的子字串</td></tr></tbody></table></div>
+
+
+</main><div id="tip" role="tooltip"></div>
+<script>
+(()=>{const t=document.getElementById('tip');
+function show(e,el){t.textContent=el.dataset.tip;t.style.display='block';const r=el.getBoundingClientRect();
+const x=(e&&e.clientX)||r.left+r.width/2,y=(e&&e.clientY)||r.top;t.style.left=Math.min(x+12,innerWidth-t.offsetWidth-8)+'px';t.style.top=(y-t.offsetHeight-10)+'px';}
+document.querySelectorAll('[data-tip]').forEach(el=>{el.addEventListener('pointermove',e=>show(e,el));
+el.addEventListener('focus',()=>show(null,el));['pointerleave','blur'].forEach(ev=>el.addEventListener(ev,()=>t.style.display='none'));});})();
+</script></body></html>
