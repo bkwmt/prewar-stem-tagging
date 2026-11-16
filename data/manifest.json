@@ -1,0 +1,28 @@
+{
+  "source_run": "full_nv_20261116_1303",
+  "prompt_version": "v3",
+  "window_s": 8.0,
+  "hop_s": 4.0,
+  "rules": {
+    "silence_db": -60.0,
+    "low": 0.05,
+    "music_min": 0.2,
+    "voice_min": 0.2,
+    "leak": 0.1
+  },
+  "path_root": "separated_78/",
+  "n_intervals": {
+    "pure_instrument": 5716,
+    "pure_noise": 2140
+  },
+  "hours": {
+    "pure_instrument": 76.25,
+    "pure_noise": 13.25
+  },
+  "n_windows": 110329,
+  "bytes": {
+    "windows_top10.parquet": 15453138,
+    "segments_pure.csv": 1199240,
+    "segments_pure.parquet": 147978
+  }
+}

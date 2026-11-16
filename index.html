@@ -1,9 +1,7 @@
 <!doctype html>
-<html lang="zh-Hant-TW">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>戰前 78 轉分軌標註</title>
-<style>
-:root{--ink:#24344C;--line:#3E5A7D;--accent:#9B2744;--paper:#F1F4F8;--grey:#849BB7;--pink:#D4A7B2;--bg:#FFFFFF;--card:#F7F9FC;--rule:#D6DEE8}
+<html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>伴奏軌標註彙整</title>
+<style>:root{--ink:#24344C;--line:#3E5A7D;--accent:#9B2744;--paper:#F1F4F8;--grey:#849BB7;--pink:#D4A7B2;--bg:#FFFFFF;--card:#F7F9FC;--rule:#D6DEE8}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#E6ECF4;--line:#9DB4D1;--accent:#E07A95;--paper:#1B2433;--grey:#8DA2BD;--bg:#111822;--card:#18212E;--rule:#2A3747}}
 :root[data-theme="dark"]{--ink:#E6ECF4;--line:#9DB4D1;--accent:#E07A95;--paper:#1B2433;--grey:#8DA2BD;--bg:#111822;--card:#18212E;--rule:#2A3747}
 *{box-sizing:border-box}
@@ -97,9 +95,384 @@ details.group .list li{padding:.4em 0}
 p.series{font-size:.88rem;background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:8px 14px;margin:0 0 1.2em;line-height:1.7}
 p.series strong{color:var(--accent)}
 footer .foot{margin:0 0 .4em}
+
+
+/* 圖表色取自霧藍紙色盤（style.css 的變數），深色模式隨之切換：純樂器＝--line、純雜音＝--accent、
+   混合＝--rule（淡底）、靜音＝空心框。--grey 與 --line 在深色模式幾乎同色，不用於類別。 */
+.viz-root{--c-inst:var(--line);--c-noise:var(--accent);--c-mixed:var(--rule);--c-sil:transparent}
+.viz .seg.sil{stroke:var(--grey);stroke-width:1;stroke-dasharray:3 2}
+.legend i.sil{border:1px dashed var(--grey)}
+.viz{width:100%;height:auto;display:block;margin:.5rem 0 1rem;font-size:12px}
+.viz .grid{stroke:var(--rule);stroke-width:1}.viz .axis{stroke:var(--grey);stroke-width:1}
+.viz .tick{fill:var(--grey);font-size:11px}.viz .lab{fill:var(--ink);font-size:12px}.viz .sub{fill:var(--grey);font-size:10px}
+.viz .inlab{fill:var(--bg);font-size:11px;font-weight:600;pointer-events:none}
+.viz .thr{stroke:var(--ink);stroke-width:1;stroke-dasharray:3 3}.viz .thrlab{fill:var(--ink);font-size:11px}
+.viz .seg:hover,.viz .seg:focus{opacity:.8;outline:none}
+.legend{display:flex;flex-wrap:wrap;gap:1rem;font-size:.9rem}.legend .key{display:inline-flex;align-items:center;gap:.35rem}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+#tip{position:fixed;pointer-events:none;background:var(--card);color:var(--ink);border:1px solid var(--rule);border-radius:6px;padding:.3rem .5rem;font-size:12px;max-width:22rem;display:none;z-index:9}
+details.tbl summary{cursor:pointer;color:var(--line)}
 </style></head>
 <body>
-<header class="hero"><div class="wrap"><h1>戰前 78 轉分軌標註：彙整結果</h1>
-<p class="sub">日治時期臺灣 78 轉唱片經 demucs 分軌後，伴奏軌與人聲軌的自動標註統計。</p></div></header>
-<main class="wrap"><p>全量計算進行中，彙整頁完成後將替換本頁。本站只公開彙整統計與方法說明，結果尚未經黃金標準驗證。</p></main>
-</body></html>
+<header class="hero"><div class="wrap">
+<h1>臺灣老唱片伴奏軌的純樂器與純雜音標註</h1>
+<p class="sub">MusicPreWar 研究線｜資料增強素材庫的第一輪全量標註</p>
+<p class="meta">中央研究院資訊科學研究所 音樂與文化科技實驗室｜產生日期 2026-11-16</p>
+</div></header>
+<main class="wrap viz-root">
+<div class="card warn"><strong>未經黃金標準驗證。</strong>以下類別全部由模型分數加上規則判定，尚未以人工試聽標註校正門檻；比例與時數只供估計素材量，不代表準確率。</div>
+
+<h2>概要</h2>
+<p><span class="stat"><b>1,801</b>首（伴奏軌 124.6 小時）</span>
+<span class="stat"><b>76.2</b>小時判為純樂器</span>
+<span class="stat"><b>13.3</b>小時判為純雜音</span>
+<span class="stat"><b>110,329</b>段（8 秒窗，步距 4 秒）</span></p>
+<p>時數以同一首內合併重疊窗後計算。素材來源為 demucs（htdemucs）分離後的伴奏軌；人聲軌不跑模型，只計算音量作為輔助證據。</p>
+<p class="legend"><span class="key"><i class="" style="background:var(--c-inst)"></i>純樂器</span><span class="key"><i class="" style="background:var(--c-noise)"></i>純雜音</span><span class="key"><i class="" style="background:var(--c-mixed)"></i>混合</span><span class="key"><i class="sil" style="background:var(--c-sil)"></i>靜音</span></p>
+<svg class="viz" viewBox="0 0 734 58" role="img" aria-label="全部段落的類別比例">
+<line class="grid" x1="190.0" x2="190.0" y1="0" y2="40"/><text class="tick" x="190.0" y="54" text-anchor="middle">0%</text>
+<line class="grid" x1="320.0" x2="320.0" y1="0" y2="40"/><text class="tick" x="320.0" y="54" text-anchor="middle">25%</text>
+<line class="grid" x1="450.0" x2="450.0" y1="0" y2="40"/><text class="tick" x="450.0" y="54" text-anchor="middle">50%</text>
+<line class="grid" x1="580.0" x2="580.0" y1="0" y2="40"/><text class="tick" x="580.0" y="54" text-anchor="middle">75%</text>
+<line class="grid" x1="710.0" x2="710.0" y1="0" y2="40"/><text class="tick" x="710.0" y="54" text-anchor="middle">100%</text>
+<text class="lab" x="182" y="15.4" text-anchor="end">全部<tspan class="sub"> 1801 首</tspan></text>
+<rect class="seg" x="190.0" y="0" width="281.8" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="全部｜純樂器：54.6%（60,206 / 110,329 段；95% Wilson 54.3%～54.9%）；約 76.2 小時"/>
+<text class="inlab" x="196.0" y="15.4">55%</text>
+<rect class="seg" x="473.8" y="0" width="42.7" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="全部｜純雜音：8.6%（9,478 / 110,329 段；95% Wilson 8.4%～8.8%）；約 13.3 小時"/>
+<text class="inlab" x="479.8" y="15.4">9%</text>
+<rect class="seg" x="518.4" y="0" width="142.5" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="全部｜混合：27.8%（30,655 / 110,329 段；95% Wilson 27.5%～28.1%）"/>
+<rect class="seg sil" x="662.9" y="0" width="45.1" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="全部｜靜音：9.1%（9,990 / 110,329 段；95% Wilson 8.9%～9.2%）"/>
+</svg>
+
+<h2>依載體</h2>
+<svg class="viz" viewBox="0 0 734 160" role="img" aria-label="依載體的類別比例">
+<line class="grid" x1="190.0" x2="190.0" y1="0" y2="142"/><text class="tick" x="190.0" y="156" text-anchor="middle">0%</text>
+<line class="grid" x1="320.0" x2="320.0" y1="0" y2="142"/><text class="tick" x="320.0" y="156" text-anchor="middle">25%</text>
+<line class="grid" x1="450.0" x2="450.0" y1="0" y2="142"/><text class="tick" x="450.0" y="156" text-anchor="middle">50%</text>
+<line class="grid" x1="580.0" x2="580.0" y1="0" y2="142"/><text class="tick" x="580.0" y="156" text-anchor="middle">75%</text>
+<line class="grid" x1="710.0" x2="710.0" y1="0" y2="142"/><text class="tick" x="710.0" y="156" text-anchor="middle">100%</text>
+<text class="lab" x="182" y="15.4" text-anchor="end">戰前78<tspan class="sub"> 1552 首</tspan></text>
+<rect class="seg" x="190.0" y="0" width="291.1" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="戰前78｜純樂器：56.4%（45,302 / 80,363 段；95% Wilson 56.0%～56.7%）；約 57.6 小時"/>
+<text class="inlab" x="196.0" y="15.4">56%</text>
+<rect class="seg" x="483.1" y="0" width="43.8" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="戰前78｜純雜音：8.8%（7,083 / 80,363 段；95% Wilson 8.6%～9.0%）；約 9.9 小時"/>
+<text class="inlab" x="489.1" y="15.4">9%</text>
+<rect class="seg" x="529.0" y="0" width="141.8" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="戰前78｜混合：27.6%（22,220 / 80,363 段；95% Wilson 27.3%～28.0%）"/>
+<rect class="seg sil" x="672.7" y="0" width="35.3" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="戰前78｜靜音：7.2%（5,758 / 80,363 段；95% Wilson 7.0%～7.3%）"/>
+<text class="lab" x="182" y="49.4" text-anchor="end">日文78<tspan class="sub"> 92 首</tspan></text>
+<rect class="seg" x="190.0" y="34" width="332.6" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="日文78｜純樂器：64.4%（2,957 / 4,595 段；95% Wilson 63.0%～65.7%）；約 3.7 小時"/>
+<text class="inlab" x="196.0" y="49.4">64%</text>
+<rect class="seg" x="524.6" y="34" width="15.9" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="日文78｜純雜音：3.4%（158 / 4,595 段；95% Wilson 2.9%～4.0%）；約 0.3 小時"/>
+<rect class="seg" x="542.5" y="34" width="134.6" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="日文78｜混合：26.3%（1,207 / 4,595 段；95% Wilson 25.0%～27.6%）"/>
+<rect class="seg sil" x="679.1" y="34" width="28.9" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="日文78｜靜音：5.9%（273 / 4,595 段；95% Wilson 5.3%～6.7%）"/>
+<text class="lab" x="182" y="83.4" text-anchor="end">戰後78<tspan class="sub"> 35 首</tspan></text>
+<rect class="seg" x="190.0" y="68" width="333.6" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="戰後78｜純樂器：64.5%（1,159 / 1,796 段；95% Wilson 62.3%～66.7%）；約 1.4 小時"/>
+<text class="inlab" x="196.0" y="83.4">65%</text>
+<rect class="seg" x="525.6" y="68" width="22.9" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="戰後78｜純雜音：4.8%（86 / 1,796 段；95% Wilson 3.9%～5.9%）；約 0.1 小時"/>
+<rect class="seg" x="550.5" y="68" width="127.7" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="戰後78｜混合：24.9%（448 / 1,796 段；95% Wilson 23.0%～27.0%）"/>
+<rect class="seg sil" x="680.2" y="68" width="27.8" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="戰後78｜靜音：5.7%（103 / 1,796 段；95% Wilson 4.8%～6.9%）"/>
+<text class="lab" x="182" y="117.4" text-anchor="end">黑膠與錄音帶<tspan class="sub"> 122 首</tspan></text>
+<rect class="seg" x="190.0" y="102" width="236.0" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="黑膠與錄音帶｜純樂器：45.8%（10,788 / 23,575 段；95% Wilson 45.1%～46.4%）；約 13.6 小時"/>
+<text class="inlab" x="196.0" y="117.4">46%</text>
+<rect class="seg" x="428.0" y="102" width="45.4" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="黑膠與錄音帶｜純雜音：9.1%（2,151 / 23,575 段；95% Wilson 8.8%～9.5%）；約 2.9 小時"/>
+<text class="inlab" x="434.0" y="117.4">9%</text>
+<rect class="seg" x="475.4" y="102" width="147.5" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="黑膠與錄音帶｜混合：28.8%（6,780 / 23,575 段；95% Wilson 28.2%～29.3%）"/>
+<rect class="seg sil" x="624.9" y="102" width="83.1" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="黑膠與錄音帶｜靜音：16.4%（3,856 / 23,575 段；95% Wilson 15.9%～16.8%）"/>
+</svg>
+<h2>依樂種群</h2>
+<p>曲種依林太崴整理的 metadata 歸併為樂種群；沒有 metadata 的曲目另列。曲目數少於 5 首的組併入「其他（併入小組）」。</p>
+<svg class="viz" viewBox="0 0 734 364" role="img" aria-label="依樂種群的類別比例">
+<line class="grid" x1="190.0" x2="190.0" y1="0" y2="346"/><text class="tick" x="190.0" y="360" text-anchor="middle">0%</text>
+<line class="grid" x1="320.0" x2="320.0" y1="0" y2="346"/><text class="tick" x="320.0" y="360" text-anchor="middle">25%</text>
+<line class="grid" x1="450.0" x2="450.0" y1="0" y2="346"/><text class="tick" x="450.0" y="360" text-anchor="middle">50%</text>
+<line class="grid" x1="580.0" x2="580.0" y1="0" y2="346"/><text class="tick" x="580.0" y="360" text-anchor="middle">75%</text>
+<line class="grid" x1="710.0" x2="710.0" y1="0" y2="346"/><text class="tick" x="710.0" y="360" text-anchor="middle">100%</text>
+<text class="lab" x="182" y="15.4" text-anchor="end">（無曲種資料）<tspan class="sub"> 861 首</tspan></text>
+<rect class="seg" x="190.0" y="0" width="307.8" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="（無曲種資料）｜純樂器：59.6%（35,894 / 60,241 段；95% Wilson 59.2%～60.0%）；約 44.7 小時"/>
+<text class="inlab" x="196.0" y="15.4">60%</text>
+<rect class="seg" x="499.8" y="0" width="28.9" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="（無曲種資料）｜純雜音：5.9%（3,574 / 60,241 段；95% Wilson 5.7%～6.1%）；約 5.0 小時"/>
+<rect class="seg" x="530.7" y="0" width="129.0" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="（無曲種資料）｜混合：25.2%（15,173 / 60,241 段；95% Wilson 24.8%～25.5%）"/>
+<rect class="seg sil" x="661.7" y="0" width="46.3" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="（無曲種資料）｜靜音：9.3%（5,600 / 60,241 段；95% Wilson 9.1%～9.5%）"/>
+<text class="lab" x="182" y="49.4" text-anchor="end">流行歌<tspan class="sub"> 405 首</tspan></text>
+<rect class="seg" x="190.0" y="34" width="321.9" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="流行歌｜純樂器：62.3%（13,352 / 21,439 段；95% Wilson 61.6%～62.9%）；約 17.0 小時"/>
+<text class="inlab" x="196.0" y="49.4">62%</text>
+<rect class="seg" x="513.9" y="34" width="9.2" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="流行歌｜純雜音：2.2%（463 / 21,439 段；95% Wilson 2.0%～2.4%）；約 0.8 小時"/>
+<rect class="seg" x="525.1" y="34" width="145.5" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="流行歌｜混合：28.4%（6,082 / 21,439 段；95% Wilson 27.8%～29.0%）"/>
+<rect class="seg sil" x="672.6" y="34" width="35.4" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="流行歌｜靜音：7.2%（1,542 / 21,439 段；95% Wilson 6.9%～7.5%）"/>
+<text class="lab" x="182" y="83.4" text-anchor="end">歌仔戲<tspan class="sub"> 187 首</tspan></text>
+<rect class="seg" x="190.0" y="68" width="240.1" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="歌仔戲｜純樂器：46.6%（4,408 / 9,466 段；95% Wilson 45.6%～47.6%）；約 5.7 小時"/>
+<text class="inlab" x="196.0" y="83.4">47%</text>
+<rect class="seg" x="432.1" y="68" width="59.6" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="歌仔戲｜純雜音：11.8%（1,121 / 9,466 段；95% Wilson 11.2%～12.5%）；約 1.6 小時"/>
+<text class="inlab" x="438.1" y="83.4">12%</text>
+<rect class="seg" x="493.7" y="68" width="161.5" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="歌仔戲｜混合：31.4%（2,976 / 9,466 段；95% Wilson 30.5%～32.4%）"/>
+<rect class="seg sil" x="657.2" y="68" width="50.8" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="歌仔戲｜靜音：10.2%（961 / 9,466 段；95% Wilson 9.6%～10.8%）"/>
+<text class="lab" x="182" y="117.4" text-anchor="end">講談<tspan class="sub"> 105 首</tspan></text>
+<rect class="seg" x="190.0" y="102" width="96.6" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="講談｜純樂器：19.0%（1,154 / 6,087 段；95% Wilson 18.0%～20.0%）；約 1.6 小時"/>
+<text class="inlab" x="196.0" y="117.4">19%</text>
+<rect class="seg" x="288.6" y="102" width="239.7" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="講談｜純雜音：46.5%（2,829 / 6,087 段；95% Wilson 45.2%～47.7%）；約 3.5 小時"/>
+<text class="inlab" x="294.6" y="117.4">46%</text>
+<rect class="seg" x="530.3" y="102" width="123.2" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="講談｜混合：24.1%（1,466 / 6,087 段；95% Wilson 23.0%～25.2%）"/>
+<rect class="seg sil" x="655.5" y="102" width="52.5" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="講談｜靜音：10.5%（638 / 6,087 段；95% Wilson 9.7%～11.3%）"/>
+<text class="lab" x="182" y="151.4" text-anchor="end">北管與京調<tspan class="sub"> 80 首</tspan></text>
+<rect class="seg" x="190.0" y="136" width="253.7" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="北管與京調｜純樂器：49.2%（2,028 / 4,124 段；95% Wilson 47.7%～50.7%）；約 2.8 小時"/>
+<text class="inlab" x="196.0" y="151.4">49%</text>
+<rect class="seg" x="445.7" y="136" width="31.8" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="北管與京調｜純雜音：6.5%（268 / 4,124 段；95% Wilson 5.8%～7.3%）；約 0.5 小時"/>
+<rect class="seg" x="479.5" y="136" width="207.1" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="北管與京調｜混合：40.2%（1,658 / 4,124 段；95% Wilson 38.7%～41.7%）"/>
+<rect class="seg sil" x="688.6" y="136" width="19.4" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="北管與京調｜靜音：4.1%（170 / 4,124 段；95% Wilson 3.6%～4.8%）"/>
+<text class="lab" x="182" y="185.4" text-anchor="end">新歌劇<tspan class="sub"> 55 首</tspan></text>
+<rect class="seg" x="190.0" y="170" width="138.0" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="新歌劇｜純樂器：26.9%（887 / 3,294 段；95% Wilson 25.4%～28.5%）；約 1.2 小時"/>
+<text class="inlab" x="196.0" y="185.4">27%</text>
+<rect class="seg" x="330.0" y="170" width="100.9" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="新歌劇｜純雜音：19.8%（652 / 3,294 段；95% Wilson 18.5%～21.2%）；約 0.9 小時"/>
+<text class="inlab" x="336.0" y="185.4">20%</text>
+<rect class="seg" x="433.0" y="170" width="186.5" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="新歌劇｜混合：36.2%（1,194 / 3,294 段；95% Wilson 34.6%～37.9%）"/>
+<rect class="seg sil" x="621.4" y="170" width="86.6" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="新歌劇｜靜音：17.0%（561 / 3,294 段；95% Wilson 15.8%～18.4%）"/>
+<text class="lab" x="182" y="219.4" text-anchor="end">其他<tspan class="sub"> 53 首</tspan></text>
+<rect class="seg" x="190.0" y="204" width="209.8" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="其他｜純樂器：40.7%（1,179 / 2,895 段；95% Wilson 38.9%～42.5%）；約 1.6 小時"/>
+<text class="inlab" x="196.0" y="219.4">41%</text>
+<rect class="seg" x="401.8" y="204" width="57.3" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="其他｜純雜音：11.4%（330 / 2,895 段；95% Wilson 10.3%～12.6%）；約 0.5 小時"/>
+<text class="inlab" x="407.8" y="219.4">11%</text>
+<rect class="seg" x="461.0" y="204" width="178.7" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="其他｜混合：34.7%（1,006 / 2,895 段；95% Wilson 33.0%～36.5%）"/>
+<rect class="seg sil" x="641.7" y="204" width="66.3" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="其他｜靜音：13.1%（380 / 2,895 段；95% Wilson 11.9%～14.4%）"/>
+<text class="lab" x="182" y="253.4" text-anchor="end">客家音樂<tspan class="sub"> 20 首</tspan></text>
+<rect class="seg" x="190.0" y="238" width="161.3" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="客家音樂｜純樂器：31.4%（364 / 1,159 段；95% Wilson 28.8%～34.1%）；約 0.5 小時"/>
+<text class="inlab" x="196.0" y="253.4">31%</text>
+<rect class="seg" x="353.3" y="238" width="66.2" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="客家音樂｜純雜音：13.1%（152 / 1,159 段；95% Wilson 11.3%～15.2%）；約 0.2 小時"/>
+<text class="inlab" x="359.3" y="253.4">13%</text>
+<rect class="seg" x="421.5" y="238" width="245.7" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="客家音樂｜混合：47.6%（552 / 1,159 段；95% Wilson 44.8%～50.5%）"/>
+<rect class="seg sil" x="669.2" y="238" width="38.8" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="客家音樂｜靜音：7.9%（91 / 1,159 段；95% Wilson 6.4%～9.5%）"/>
+<text class="lab" x="182" y="287.4" text-anchor="end">南管<tspan class="sub"> 26 首</tspan></text>
+<rect class="seg" x="190.0" y="272" width="268.3" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="南管｜純樂器：52.0%（549 / 1,056 段；95% Wilson 49.0%～55.0%）；約 0.8 小時"/>
+<text class="inlab" x="196.0" y="287.4">52%</text>
+<rect class="seg" x="460.3" y="272" width="28.5" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="南管｜純雜音：5.9%（62 / 1,056 段；95% Wilson 4.6%～7.5%）；約 0.1 小時"/>
+<rect class="seg" x="490.9" y="272" width="217.1" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="南管｜混合：42.1%（445 / 1,056 段；95% Wilson 39.2%～45.1%）"/>
+<text class="lab" x="182" y="321.4" text-anchor="end">器樂<tspan class="sub"> 9 首</tspan></text>
+<rect class="seg" x="190.0" y="306" width="356.0" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="器樂｜純樂器：68.8%（391 / 568 段；95% Wilson 64.9%～72.5%）；約 0.5 小時"/>
+<text class="inlab" x="196.0" y="321.4">69%</text>
+<rect class="seg" x="548.0" y="306" width="22.7" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="器樂｜純雜音：4.8%（27 / 568 段；95% Wilson 3.3%～6.8%）；約 0.0 小時"/>
+<rect class="seg" x="572.7" y="306" width="92.3" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="器樂｜混合：18.1%（103 / 568 段；95% Wilson 15.2%～21.5%）"/>
+<rect class="seg sil" x="667.0" y="306" width="41.0" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="器樂｜靜音：8.3%（47 / 568 段；95% Wilson 6.3%～10.8%）"/>
+</svg>
+<h2>依錄音年代（戰前 78 轉）</h2>
+<svg class="viz" viewBox="0 0 734 126" role="img" aria-label="依錄音年代的類別比例">
+<line class="grid" x1="190.0" x2="190.0" y1="0" y2="108"/><text class="tick" x="190.0" y="122" text-anchor="middle">0%</text>
+<line class="grid" x1="320.0" x2="320.0" y1="0" y2="108"/><text class="tick" x="320.0" y="122" text-anchor="middle">25%</text>
+<line class="grid" x1="450.0" x2="450.0" y1="0" y2="108"/><text class="tick" x="450.0" y="122" text-anchor="middle">50%</text>
+<line class="grid" x1="580.0" x2="580.0" y1="0" y2="108"/><text class="tick" x="580.0" y="122" text-anchor="middle">75%</text>
+<line class="grid" x1="710.0" x2="710.0" y1="0" y2="108"/><text class="tick" x="710.0" y="122" text-anchor="middle">100%</text>
+<text class="lab" x="182" y="15.4" text-anchor="end">機械錄音（1928 年以前）<tspan class="sub"> 68 首</tspan></text>
+<rect class="seg" x="190.0" y="0" width="229.7" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="機械錄音（1928 年以前）｜純樂器：44.6%（1,459 / 3,274 段；95% Wilson 42.9%～46.3%）；約 2.0 小時"/>
+<text class="inlab" x="196.0" y="15.4">45%</text>
+<rect class="seg" x="421.7" y="0" width="49.6" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="機械錄音（1928 年以前）｜純雜音：9.9%（325 / 3,274 段；95% Wilson 8.9%～11.0%）；約 0.5 小時"/>
+<text class="inlab" x="427.7" y="15.4">10%</text>
+<rect class="seg" x="473.3" y="0" width="218.8" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="機械錄音（1928 年以前）｜混合：42.5%（1,390 / 3,274 段；95% Wilson 40.8%～44.2%）"/>
+<rect class="seg sil" x="694.1" y="0" width="13.9" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="機械錄音（1928 年以前）｜靜音：3.1%（100 / 3,274 段；95% Wilson 2.5%～3.7%）"/>
+<text class="lab" x="182" y="49.4" text-anchor="end">電氣錄音（1929 年以後）<tspan class="sub"> 868 首</tspan></text>
+<rect class="seg" x="190.0" y="34" width="252.1" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="電氣錄音（1929 年以後）｜純樂器：48.9%（22,781 / 46,627 段；95% Wilson 48.4%～49.3%）；約 29.5 小時"/>
+<text class="inlab" x="196.0" y="49.4">49%</text>
+<rect class="seg" x="444.1" y="34" width="60.0" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="電氣錄音（1929 年以後）｜純雜音：11.9%（5,558 / 46,627 段；95% Wilson 11.6%～12.2%）；約 7.7 小時"/>
+<text class="inlab" x="450.1" y="49.4">12%</text>
+<rect class="seg" x="506.0" y="34" width="154.2" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="電氣錄音（1929 年以後）｜混合：30.0%（14,003 / 46,627 段；95% Wilson 29.6%～30.4%）"/>
+<rect class="seg sil" x="662.2" y="34" width="45.8" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="電氣錄音（1929 年以後）｜靜音：9.2%（4,285 / 46,627 段；95% Wilson 8.9%～9.5%）"/>
+<text class="lab" x="182" y="83.4" text-anchor="end">（無年代資料）<tspan class="sub"> 616 首</tspan></text>
+<rect class="seg" x="190.0" y="68" width="357.5" height="22" rx="4" style="fill:var(--c-inst)" tabindex="0" data-tip="（無年代資料）｜純樂器：69.1%（21,062 / 30,462 段；95% Wilson 68.6%～69.7%）；約 26.1 小時"/>
+<text class="inlab" x="196.0" y="83.4">69%</text>
+<rect class="seg" x="549.5" y="68" width="18.5" height="22" rx="4" style="fill:var(--c-noise)" tabindex="0" data-tip="（無年代資料）｜純雜音：3.9%（1,200 / 30,462 段；95% Wilson 3.7%～4.2%）；約 1.7 小時"/>
+<rect class="seg" x="570.0" y="68" width="114.5" height="22" rx="4" style="fill:var(--c-mixed)" tabindex="0" data-tip="（無年代資料）｜混合：22.4%（6,827 / 30,462 段；95% Wilson 21.9%～22.9%）"/>
+<rect class="seg sil" x="686.6" y="68" width="21.4" height="22" rx="4" style="fill:var(--c-sil)" tabindex="0" data-tip="（無年代資料）｜靜音：4.5%（1,373 / 30,462 段；95% Wilson 4.3%～4.7%）"/>
+</svg>
+
+<details class="tbl"><summary>表格檢視（所有圖表的數值）</summary>
+<h3>依載體</h3><div class="tablewrap"><table><thead><tr><th>載體</th><th class="num">曲目</th><th class="num">段數</th><th class="num">純樂器</th><th class="num">純雜音</th><th class="num">混合</th><th class="num">靜音</th><th class="num">純樂器時數</th><th class="num">純雜音時數</th></tr></thead><tbody>
+<tr><td>戰前78</td><td class="num">1552</td><td class="num">80,363</td><td class="num">56.4%</td><td class="num">8.8%</td><td class="num">27.6%</td><td class="num">7.2%</td><td class="num">57.6</td><td class="num">9.9</td></tr>
+<tr><td>日文78</td><td class="num">92</td><td class="num">4,595</td><td class="num">64.4%</td><td class="num">3.4%</td><td class="num">26.3%</td><td class="num">5.9%</td><td class="num">3.7</td><td class="num">0.3</td></tr>
+<tr><td>戰後78</td><td class="num">35</td><td class="num">1,796</td><td class="num">64.5%</td><td class="num">4.8%</td><td class="num">24.9%</td><td class="num">5.7%</td><td class="num">1.4</td><td class="num">0.1</td></tr>
+<tr><td>黑膠與錄音帶</td><td class="num">122</td><td class="num">23,575</td><td class="num">45.8%</td><td class="num">9.1%</td><td class="num">28.8%</td><td class="num">16.4%</td><td class="num">13.6</td><td class="num">2.9</td></tr>
+</tbody></table></div>
+<h3>依樂種群</h3><div class="tablewrap"><table><thead><tr><th>樂種群</th><th class="num">曲目</th><th class="num">段數</th><th class="num">純樂器</th><th class="num">純雜音</th><th class="num">混合</th><th class="num">靜音</th><th class="num">純樂器時數</th><th class="num">純雜音時數</th></tr></thead><tbody>
+<tr><td>（無曲種資料）</td><td class="num">861</td><td class="num">60,241</td><td class="num">59.6%</td><td class="num">5.9%</td><td class="num">25.2%</td><td class="num">9.3%</td><td class="num">44.7</td><td class="num">5.0</td></tr>
+<tr><td>流行歌</td><td class="num">405</td><td class="num">21,439</td><td class="num">62.3%</td><td class="num">2.2%</td><td class="num">28.4%</td><td class="num">7.2%</td><td class="num">17.0</td><td class="num">0.8</td></tr>
+<tr><td>歌仔戲</td><td class="num">187</td><td class="num">9,466</td><td class="num">46.6%</td><td class="num">11.8%</td><td class="num">31.4%</td><td class="num">10.2%</td><td class="num">5.7</td><td class="num">1.6</td></tr>
+<tr><td>講談</td><td class="num">105</td><td class="num">6,087</td><td class="num">19.0%</td><td class="num">46.5%</td><td class="num">24.1%</td><td class="num">10.5%</td><td class="num">1.6</td><td class="num">3.5</td></tr>
+<tr><td>北管與京調</td><td class="num">80</td><td class="num">4,124</td><td class="num">49.2%</td><td class="num">6.5%</td><td class="num">40.2%</td><td class="num">4.1%</td><td class="num">2.8</td><td class="num">0.5</td></tr>
+<tr><td>新歌劇</td><td class="num">55</td><td class="num">3,294</td><td class="num">26.9%</td><td class="num">19.8%</td><td class="num">36.2%</td><td class="num">17.0%</td><td class="num">1.2</td><td class="num">0.9</td></tr>
+<tr><td>其他</td><td class="num">53</td><td class="num">2,895</td><td class="num">40.7%</td><td class="num">11.4%</td><td class="num">34.7%</td><td class="num">13.1%</td><td class="num">1.6</td><td class="num">0.5</td></tr>
+<tr><td>客家音樂</td><td class="num">20</td><td class="num">1,159</td><td class="num">31.4%</td><td class="num">13.1%</td><td class="num">47.6%</td><td class="num">7.9%</td><td class="num">0.5</td><td class="num">0.2</td></tr>
+<tr><td>南管</td><td class="num">26</td><td class="num">1,056</td><td class="num">52.0%</td><td class="num">5.9%</td><td class="num">42.1%</td><td class="num">0.0%</td><td class="num">0.8</td><td class="num">0.1</td></tr>
+<tr><td>器樂</td><td class="num">9</td><td class="num">568</td><td class="num">68.8%</td><td class="num">4.8%</td><td class="num">18.1%</td><td class="num">8.3%</td><td class="num">0.5</td><td class="num">0.0</td></tr>
+</tbody></table></div>
+<h3>依錄音年代</h3><div class="tablewrap"><table><thead><tr><th>年代</th><th class="num">曲目</th><th class="num">段數</th><th class="num">純樂器</th><th class="num">純雜音</th><th class="num">混合</th><th class="num">靜音</th><th class="num">純樂器時數</th><th class="num">純雜音時數</th></tr></thead><tbody>
+<tr><td>機械錄音（1928 年以前）</td><td class="num">68</td><td class="num">3,274</td><td class="num">44.6%</td><td class="num">9.9%</td><td class="num">42.5%</td><td class="num">3.1%</td><td class="num">2.0</td><td class="num">0.5</td></tr>
+<tr><td>電氣錄音（1929 年以後）</td><td class="num">868</td><td class="num">46,627</td><td class="num">48.9%</td><td class="num">11.9%</td><td class="num">30.0%</td><td class="num">9.2%</td><td class="num">29.5</td><td class="num">7.7</td></tr>
+<tr><td>（無年代資料）</td><td class="num">616</td><td class="num">30,462</td><td class="num">69.1%</td><td class="num">3.9%</td><td class="num">22.4%</td><td class="num">4.5%</td><td class="num">26.1</td><td class="num">1.7</td></tr>
+</tbody></table></div>
+</details>
+
+<h2>分數分布（非靜音段，100,339 段）</h2>
+<p>縱軸為段數（平方根刻度，以保留低頻區）。虛線為規則門檻。</p>
+<h3>樂聲分數：AST 的 Music 與樂器類標籤取最大值</h3>
+<svg class="viz" viewBox="0 0 560 230" role="img" aria-label="樂聲分數分布">
+<line class="grid" x1="46" x2="550" y1="152.5" y2="152.5"/><text class="tick" x="40" y="156.5" text-anchor="end">559</text>
+<line class="grid" x1="46" x2="550" y1="105.0" y2="105.0"/><text class="tick" x="40" y="109.0" text-anchor="end">2,237</text>
+<line class="grid" x1="46" x2="550" y1="57.5" y2="57.5"/><text class="tick" x="40" y="61.5" text-anchor="end">5,034</text>
+<line class="grid" x1="46" x2="550" y1="10.0" y2="10.0"/><text class="tick" x="40" y="14.0" text-anchor="end">8,950</text>
+<rect class="seg" x="47.0" y="10.0" width="8.1" height="190.0" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.00～0.02：8,950 段"/>
+<rect class="seg" x="57.1" y="110.3" width="8.1" height="89.7" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.02～0.04：1,996 段"/>
+<rect class="seg" x="67.2" y="136.3" width="8.1" height="63.7" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.04～0.06：1,006 段"/>
+<rect class="seg" x="77.2" y="147.6" width="8.1" height="52.4" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.06～0.08：682 段"/>
+<rect class="seg" x="87.3" y="153.0" width="8.1" height="47.0" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.08～0.10：548 段"/>
+<rect class="seg" x="97.4" y="154.5" width="8.1" height="45.5" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.10～0.12：514 段"/>
+<rect class="seg" x="107.5" y="158.5" width="8.1" height="41.5" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.12～0.14：426 段"/>
+<rect class="seg" x="117.6" y="158.9" width="8.1" height="41.1" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.14～0.16：418 段"/>
+<rect class="seg" x="127.6" y="157.6" width="8.1" height="42.4" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.16～0.18：445 段"/>
+<rect class="seg" x="137.7" y="143.0" width="8.1" height="57.0" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.18～0.20：805 段"/>
+<rect class="seg" x="147.8" y="153.3" width="8.1" height="46.7" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.20～0.22：540 段"/>
+<rect class="seg" x="157.9" y="152.7" width="8.1" height="47.3" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.22～0.24：554 段"/>
+<rect class="seg" x="168.0" y="152.9" width="8.1" height="47.1" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.24～0.26：551 段"/>
+<rect class="seg" x="178.0" y="148.8" width="8.1" height="51.2" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.26～0.28：649 段"/>
+<rect class="seg" x="188.1" y="147.7" width="8.1" height="52.3" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.28～0.30：678 段"/>
+<rect class="seg" x="198.2" y="146.3" width="8.1" height="53.7" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.30～0.32：716 段"/>
+<rect class="seg" x="208.3" y="142.8" width="8.1" height="57.2" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.32～0.34：812 段"/>
+<rect class="seg" x="218.4" y="136.9" width="8.1" height="63.1" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.34～0.36：987 段"/>
+<rect class="seg" x="228.4" y="133.4" width="8.1" height="66.6" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.36～0.38：1,100 段"/>
+<rect class="seg" x="238.5" y="126.1" width="8.1" height="73.9" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.38～0.40：1,354 段"/>
+<rect class="seg" x="248.6" y="119.1" width="8.1" height="80.9" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.40～0.42：1,623 段"/>
+<rect class="seg" x="258.7" y="109.7" width="8.1" height="90.3" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.42～0.44：2,022 段"/>
+<rect class="seg" x="268.8" y="102.5" width="8.1" height="97.5" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.44～0.46：2,357 段"/>
+<rect class="seg" x="278.8" y="91.9" width="8.1" height="108.1" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.46～0.48：2,896 段"/>
+<rect class="seg" x="288.9" y="85.7" width="8.1" height="114.3" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.48～0.50：3,237 段"/>
+<rect class="seg" x="299.0" y="77.0" width="8.1" height="123.0" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.50～0.52：3,751 段"/>
+<rect class="seg" x="309.1" y="73.9" width="8.1" height="126.1" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.52～0.54：3,944 段"/>
+<rect class="seg" x="319.2" y="71.2" width="8.1" height="128.8" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.54～0.56：4,111 段"/>
+<rect class="seg" x="329.2" y="69.5" width="8.1" height="130.5" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.56～0.58：4,222 段"/>
+<rect class="seg" x="339.3" y="66.6" width="8.1" height="133.4" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.58～0.60：4,411 段"/>
+<rect class="seg" x="349.4" y="68.8" width="8.1" height="131.2" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.60～0.62：4,267 段"/>
+<rect class="seg" x="359.5" y="73.2" width="8.1" height="126.8" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.62～0.64：3,984 段"/>
+<rect class="seg" x="369.6" y="73.3" width="8.1" height="126.7" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.64～0.66：3,983 段"/>
+<rect class="seg" x="379.6" y="77.9" width="8.1" height="122.1" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.66～0.68：3,699 段"/>
+<rect class="seg" x="389.7" y="83.1" width="8.1" height="116.9" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.68～0.70：3,388 段"/>
+<rect class="seg" x="399.8" y="86.1" width="8.1" height="113.9" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.70～0.72：3,216 段"/>
+<rect class="seg" x="409.9" y="90.3" width="8.1" height="109.7" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.72～0.74：2,985 段"/>
+<rect class="seg" x="420.0" y="92.2" width="8.1" height="107.8" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.74～0.76：2,880 段"/>
+<rect class="seg" x="430.0" y="95.1" width="8.1" height="104.9" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.76～0.78：2,726 段"/>
+<rect class="seg" x="440.1" y="99.2" width="8.1" height="100.8" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.78～0.80：2,520 段"/>
+<rect class="seg" x="450.2" y="101.5" width="8.1" height="98.5" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.80～0.82：2,407 段"/>
+<rect class="seg" x="460.3" y="107.3" width="8.1" height="92.7" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.82～0.84：2,129 段"/>
+<rect class="seg" x="470.4" y="115.9" width="8.1" height="84.1" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.84～0.86：1,753 段"/>
+<rect class="seg" x="480.4" y="121.4" width="8.1" height="78.6" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.86～0.88：1,531 段"/>
+<rect class="seg" x="490.5" y="131.6" width="8.1" height="68.4" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.88～0.90：1,161 段"/>
+<rect class="seg" x="500.6" y="144.1" width="8.1" height="55.9" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.90～0.92：774 段"/>
+<rect class="seg" x="510.7" y="159.2" width="8.1" height="40.8" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.92～0.94：413 段"/>
+<rect class="seg" x="520.8" y="174.1" width="8.1" height="25.9" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.94～0.96：166 段"/>
+<rect class="seg" x="530.8" y="185.8" width="8.1" height="14.2" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.96～0.98：50 段"/>
+<rect class="seg" x="540.9" y="197.2" width="8.1" height="2.8" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.98～1.00：2 段"/>
+<line class="axis" x1="46" x2="550" y1="200" y2="200"/>
+<text class="tick" x="46.0" y="216" text-anchor="middle">0.0</text>
+<text class="tick" x="146.8" y="216" text-anchor="middle">0.2</text>
+<text class="tick" x="247.6" y="216" text-anchor="middle">0.4</text>
+<text class="tick" x="348.4" y="216" text-anchor="middle">0.6</text>
+<text class="tick" x="449.2" y="216" text-anchor="middle">0.8</text>
+<text class="tick" x="550.0" y="216" text-anchor="middle">1.0</text>
+<line class="thr" x1="71.2" x2="71.2" y1="6" y2="200"/><text class="thrlab" x="75.2" y="16">0.05（無樂聲）</text>
+<line class="thr" x1="146.8" x2="146.8" y1="6" y2="200"/><text class="thrlab" x="150.8" y="32">0.2（有樂聲）</text>
+<text class="tick" x="303" y="228" text-anchor="middle">max(Music, 樂器類) sigmoid 分數</text>
+</svg>
+<h3>人聲分數：AST 的人聲類標籤取最大值</h3>
+<svg class="viz" viewBox="0 0 560 230" role="img" aria-label="人聲分數分布">
+<line class="grid" x1="46" x2="550" y1="152.5" y2="152.5"/><text class="tick" x="40" y="156.5" text-anchor="end">4,294</text>
+<line class="grid" x1="46" x2="550" y1="105.0" y2="105.0"/><text class="tick" x="40" y="109.0" text-anchor="end">17,176</text>
+<line class="grid" x1="46" x2="550" y1="57.5" y2="57.5"/><text class="tick" x="40" y="61.5" text-anchor="end">38,647</text>
+<line class="grid" x1="46" x2="550" y1="10.0" y2="10.0"/><text class="tick" x="40" y="14.0" text-anchor="end">68,706</text>
+<rect class="seg" x="47.0" y="10.0" width="8.1" height="190.0" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.00～0.02：68,707 段"/>
+<rect class="seg" x="57.1" y="104.5" width="8.1" height="95.5" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.02～0.04：17,354 段"/>
+<rect class="seg" x="67.2" y="145.9" width="8.1" height="54.1" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.04～0.06：5,574 段"/>
+<rect class="seg" x="77.2" y="162.1" width="8.1" height="37.9" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.06～0.08：2,731 段"/>
+<rect class="seg" x="87.3" y="171.3" width="8.1" height="28.7" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.08～0.10：1,571 段"/>
+<rect class="seg" x="97.4" y="176.9" width="8.1" height="23.1" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.10～0.12：1,017 段"/>
+<rect class="seg" x="107.5" y="180.4" width="8.1" height="19.6" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.12～0.14：729 段"/>
+<rect class="seg" x="117.6" y="183.5" width="8.1" height="16.5" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.14～0.16：517 段"/>
+<rect class="seg" x="127.6" y="185.2" width="8.1" height="14.8" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.16～0.18：415 段"/>
+<rect class="seg" x="137.7" y="186.7" width="8.1" height="13.3" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.18～0.20：336 段"/>
+<rect class="seg" x="147.8" y="188.8" width="8.1" height="11.2" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.20～0.22：238 段"/>
+<rect class="seg" x="157.9" y="190.2" width="8.1" height="9.8" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.22～0.24：182 段"/>
+<rect class="seg" x="168.0" y="190.4" width="8.1" height="9.6" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.24～0.26：175 段"/>
+<rect class="seg" x="178.0" y="192.0" width="8.1" height="8.0" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.26～0.28：121 段"/>
+<rect class="seg" x="188.1" y="192.1" width="8.1" height="7.9" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.28～0.30：119 段"/>
+<rect class="seg" x="198.2" y="193.2" width="8.1" height="6.8" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.30～0.32：87 段"/>
+<rect class="seg" x="208.3" y="193.5" width="8.1" height="6.5" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.32～0.34：81 段"/>
+<rect class="seg" x="218.4" y="194.7" width="8.1" height="5.3" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.34～0.36：53 段"/>
+<rect class="seg" x="228.4" y="195.0" width="8.1" height="5.0" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.36～0.38：47 段"/>
+<rect class="seg" x="238.5" y="195.8" width="8.1" height="4.2" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.38～0.40：33 段"/>
+<rect class="seg" x="248.6" y="195.8" width="8.1" height="4.2" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.40～0.42：33 段"/>
+<rect class="seg" x="258.7" y="196.2" width="8.1" height="3.8" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.42～0.44：28 段"/>
+<rect class="seg" x="268.8" y="196.7" width="8.1" height="3.3" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.44～0.46：21 段"/>
+<rect class="seg" x="278.8" y="196.9" width="8.1" height="3.1" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.46～0.48：18 段"/>
+<rect class="seg" x="288.9" y="197.1" width="8.1" height="2.9" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.48～0.50：16 段"/>
+<rect class="seg" x="299.0" y="196.9" width="8.1" height="3.1" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.50～0.52：18 段"/>
+<rect class="seg" x="309.1" y="197.5" width="8.1" height="2.5" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.52～0.54：12 段"/>
+<rect class="seg" x="319.2" y="196.8" width="8.1" height="3.2" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.54～0.56：19 段"/>
+<rect class="seg" x="329.2" y="198.1" width="8.1" height="1.9" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.56～0.58：7 段"/>
+<rect class="seg" x="339.3" y="197.1" width="8.1" height="2.9" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.58～0.60：16 段"/>
+<rect class="seg" x="349.4" y="198.6" width="8.1" height="1.4" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.60～0.62：4 段"/>
+<rect class="seg" x="359.5" y="197.8" width="8.1" height="2.2" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.62～0.64：9 段"/>
+<rect class="seg" x="369.6" y="198.7" width="8.1" height="1.3" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.64～0.66：3 段"/>
+<rect class="seg" x="379.6" y="198.1" width="8.1" height="1.9" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.66～0.68：7 段"/>
+<rect class="seg" x="389.7" y="198.4" width="8.1" height="1.6" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.68～0.70：5 段"/>
+<rect class="seg" x="399.8" y="198.2" width="8.1" height="1.8" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.70～0.72：6 段"/>
+<rect class="seg" x="409.9" y="198.4" width="8.1" height="1.6" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.72～0.74：5 段"/>
+<rect class="seg" x="420.0" y="199.0" width="8.1" height="1.0" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.74～0.76：2 段"/>
+<rect class="seg" x="430.0" y="198.1" width="8.1" height="1.9" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.76～0.78：7 段"/>
+<rect class="seg" x="440.1" y="199.3" width="8.1" height="0.7" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.78～0.80：1 段"/>
+<rect class="seg" x="450.2" y="198.7" width="8.1" height="1.3" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.80～0.82：3 段"/>
+<rect class="seg" x="460.3" y="198.6" width="8.1" height="1.4" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.82～0.84：4 段"/>
+<rect class="seg" x="470.4" y="199.0" width="8.1" height="1.0" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.84～0.86：2 段"/>
+<rect class="seg" x="480.4" y="198.7" width="8.1" height="1.3" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.86～0.88：3 段"/>
+<rect class="seg" x="500.6" y="199.3" width="8.1" height="0.7" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.90～0.92：1 段"/>
+<rect class="seg" x="510.7" y="199.0" width="8.1" height="1.0" rx="2" style="fill:var(--c-inst)" tabindex="0" data-tip="0.92～0.94：2 段"/>
+<line class="axis" x1="46" x2="550" y1="200" y2="200"/>
+<text class="tick" x="46.0" y="216" text-anchor="middle">0.0</text>
+<text class="tick" x="146.8" y="216" text-anchor="middle">0.2</text>
+<text class="tick" x="247.6" y="216" text-anchor="middle">0.4</text>
+<text class="tick" x="348.4" y="216" text-anchor="middle">0.6</text>
+<text class="tick" x="449.2" y="216" text-anchor="middle">0.8</text>
+<text class="tick" x="550.0" y="216" text-anchor="middle">1.0</text>
+<line class="thr" x1="71.2" x2="71.2" y1="6" y2="200"/><text class="thrlab" x="75.2" y="16">0.05（無人聲）</text>
+<line class="thr" x1="96.4" x2="96.4" y1="6" y2="200"/><text class="thrlab" x="100.4" y="32">0.1（殘留旗標）</text>
+<text class="tick" x="303" y="228" text-anchor="middle">人聲類 sigmoid 分數</text>
+</svg>
+<p>非靜音段中帶「人聲殘留」旗標（demucs 未分乾淨）者占 7.7%。</p>
+
+<h2>下載</h2>
+<p>供資料增強取樣使用。路徑一律相對於分離結果的根目錄 <code>separated_78/</code>（格式為 <code>&lt;資料夾&gt;/htdemucs/&lt;曲名&gt;/no_vocals.wav</code>），音訊本身不在此提供。</p>
+<div class="tablewrap"><table><thead><tr><th>檔案</th><th>內容</th><th class="num">大小</th></tr></thead><tbody>
+<tr><td><a href="data/segments_pure.csv">segments_pure.csv</a><br><a href="data/segments_pure.parquet">segments_pure.parquet</a></td>
+<td>合併後的連續區段：同一首內相鄰的純樂器窗或純雜音窗合併成一段。純樂器 5,716 段、約 76.2 小時；純雜音 2,140 段、約 13.2 小時。
+欄位：<code>stem_path, class, start, end, duration, n_windows, medium, genre_group</code>，以及區段內最差的分數（<code>rms_db_min, ast_music_max_min, ast_voice_max, clap_margin_min</code>），可用來再收緊門檻。</td>
+<td class="num">1.1 MB<br>0.1 MB</td></tr>
+<tr><td><a href="data/windows_top10.parquet">windows_top10.parquet</a></td>
+<td>伴奏軌每個 8 秒窗一列（110,329 列），含規則類別、殘留旗標、伴奏軌與人聲軌音量（dB），以及 AST 前 10 名（標籤＋sigmoid）與 CLAP 前 10 名（提示詞＋softmax）。適合自訂門檻。</td>
+<td class="num">14.7 MB</td></tr>
+<tr><td><a href="data/manifest.json">manifest.json</a></td><td>來源執行、規則門檻、各檔段數與大小。</td><td class="num">—</td></tr>
+</tbody></table></div>
+<p>讀取範例（Python）：<code>pd.read_parquet("segments_pure.parquet").query("class == 'pure_noise'")</code></p>
+
+<h2>方法</h2>
+<ul>
+<li><strong>資料</strong>：日治時期至戰後的臺灣唱片數位化檔案，以 demucs htdemucs 分離為人聲與伴奏兩軌；本頁只統計伴奏軌。載體分為戰前 78 轉、日文 78 轉、戰後 78 轉、黑膠與錄音帶。</li>
+<li><strong>切段</strong>：8 秒窗、步距 4 秒；每段先以 RMS 判斷靜音（低於 -60 dB）。</li>
+<li><strong>模型</strong>：AST（MIT/ast-finetuned-audioset-10-10-0.4593，AudioSet 527 類）與 LAION-CLAP（clap-htsat-unfused，零樣本提示詞 v3）。兩個模型各輸出前 10 名。</li>
+<li><strong>純樂器</strong>：max(Music, 樂器類) ≥ 0.2，人聲類 &lt; 0.05，且 CLAP 第一名為樂器類提示詞。</li>
+<li><strong>純雜音</strong>：Music、樂器類、人聲類都 &lt; 0.05，且 CLAP 第一名為唱片表面雜音類提示詞。</li>
+<li><strong>混合</strong>：上述條件不一致者。規則以精確率優先，不確定的段落一律歸入混合。</li>
+<li><strong>區間</strong>：滑鼠移到長條上可看 95% Wilson 信賴區間。區間以段為單位計算；相鄰窗重疊、同一首內的段落高度相關，實際不確定性大於區間所示。</li>
+<li><strong>下一步</strong>：以人工試聽的黃金標準校正門檻，並以 Wilson 下界控制各類別的精確率。</li>
+</ul>
+
+<footer><p class="foot">下載清單只含分離檔路徑與分類結果，不含演出者等 metadata，也不含音訊。</p></footer>
+</main><div id="tip" role="tooltip"></div>
+<script>
+(()=>{const t=document.getElementById('tip');
+function show(e,el){t.textContent=el.dataset.tip;t.style.display='block';const r=el.getBoundingClientRect();
+const x=(e&&e.clientX)||r.left+r.width/2,y=(e&&e.clientY)||r.top;t.style.left=Math.min(x+12,innerWidth-t.offsetWidth-8)+'px';t.style.top=(y-t.offsetHeight-10)+'px';}
+document.querySelectorAll('[data-tip]').forEach(el=>{el.addEventListener('pointermove',e=>show(e,el));
+el.addEventListener('focus',()=>show(null,el));['pointerleave','blur'].forEach(ev=>el.addEventListener(ev,()=>t.style.display='none'));});})();
+</script></body></html>
